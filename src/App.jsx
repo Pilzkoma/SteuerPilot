@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import LoginScreen from './screens/Login/LoginScreen.jsx'
 import OnboardingScreen from './screens/Onboarding/OnboardingScreen.jsx'
+import AppShell from './components/AppShell/AppShell.jsx'
+import DashboardScreen from './screens/Dashboard/DashboardScreen.jsx'
 
-// Screens werden hier nach und nach eingehängt.
-// screen: 'loading' | 'login' | 'onboarding' | 'app'
+// Screens: 'login' | 'onboarding' | 'app'
 
 function App() {
   const [screen, setScreen] = useState('login')
+  const [activeNav, setActiveNav] = useState('dashboard')
 
   // Nach dem Login: prüfen ob Onboarding bereits abgeschlossen
   async function handleUnlocked() {
@@ -43,19 +45,19 @@ function App() {
       )}
 
       {screen === 'app' && (
-        // Phase 3 — Dashboard folgt
-        <div key="app" style={{
-          height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'var(--color-background)',
-          color: 'var(--color-on-surface-variant)',
-          fontFamily: 'var(--font-family)',
-          fontSize: '0.875rem'
-        }}>
-          Onboarding abgeschlossen ✓ — Dashboard folgt in Phase 3
-        </div>
+        <AppShell
+          key="app"
+          activeScreen={activeNav}
+          onNavigate={setActiveNav}
+        >
+          {({ nutzer, activeJahr }) => (
+            <>
+              {activeNav === 'dashboard' && (
+                <DashboardScreen nutzer={nutzer} activeJahr={activeJahr} />
+              )}
+            </>
+          )}
+        </AppShell>
       )}
     </AnimatePresence>
   )

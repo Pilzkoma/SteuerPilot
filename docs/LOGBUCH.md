@@ -115,3 +115,45 @@ Das komplette Projektfundament wurde von Null aufgebaut:
 ### Offene Punkte / Nächste Schritte
 
 - **Phase 3:** Dashboard bauen (Jahresübersicht, Rückerstattungsschätzung, Deadlines, Steuerjahr-Selektor)
+
+---
+
+## 2026-03-25 — Phase 3: Dashboard + AppShell
+
+### Was wurde gebaut
+
+- **`src/components/AppShell/AppShell.jsx`** — Haupt-App-Layout:
+  - Sidebar (240px) mit Logo, Jahres-Selektor, Navigation, Nutzerprofil unten
+  - Jahres-Selektor: animiertes Dropdown, wechselt aktives Jahr in DB sofort
+  - Navigation: Dashboard (aktiv), Wizard/Belege/Umsatz/PDF/Einstellungen (grau, "Bald"-Badge)
+  - Animierter Active-Indicator (layoutId) für aktuellen Nav-Eintrag
+  - Lädt Nutzerprofil + Steuerjahre beim Mount, gibt beides per Render-Prop an Screens weiter
+
+- **`src/screens/Dashboard/DashboardScreen.jsx`** — Dashboard-Inhalt:
+  - **Begrüßung** — Tageszeit-abhängig (Morgen/Tag/Abend) mit Vornamen
+  - **3 Metriken** — Einnahmen, Werbungskosten, Anzahl Belege (alle 0 im Erstzustand)
+  - **Schätzungs-Card** — nutzt `schaetzeRueckerstattung()` aus steuerberechnung.js; zeigt Rückerstattung (grün) oder Nachzahlung (rot); Empty State wenn keine Daten
+  - **Fristen-Card** — Abgabefristen für aktives Steuerjahr: ohne StB (31. Okt) und mit StB (28. Feb), mit farbkodiertem Countdown (rot <30 Tage, gelb <90 Tage, blau sonst)
+  - **Fortschritts-Checkliste** — 5 Punkte: Profil, Steuer-ID, Einnahmen, Werbungskosten, Belege; Fortschrittsbalken
+
+- **`src/App.jsx`** — AppShell + DashboardScreen eingehängt; Render-Prop Pattern für `nutzer` und `activeJahr`
+
+### Entscheidungen
+
+- **Render-Prop statt Context** für nutzer/activeJahr — einfacher, kein Provider nötig, wird in Phase 4+ ggf. zu Context umgebaut
+- **Jahreswechsel sofort in DB** — kein "Speichern"-Button nötig, da atomare Operation
+- **Lohnsteuer-Feld im Metric-State auf `null`** — kommt erst aus Wizard (Phase 4); Schätzung markiert sich automatisch als "unvollständig"
+- **Deadline-Farben:** rot ≤30 Tage, amber ≤90 Tage, primary > 90 Tage — pragmatische Grenzwerte
+
+### Status
+
+✅ AppShell mit Sidebar, Jahresselektor, Navigation
+✅ DashboardScreen mit allen 5 Widget-Cards
+✅ Build sauber (576 kB JS, keine Fehler)
+✅ Phase 3 abgeschlossen
+
+### Offene Punkte / Nächste Schritte
+
+- **Phase 4:** Dateneingabe-Wizard (Schritt-für-Schritt Formulare: Lohn, Fahrtkosten, Homeoffice, Arbeitsmittel, Sonderausgaben)
+- Lohnsteuer-Daten aus Wizard → Dashboard Schätzung wird vollständig
+- Context für nutzer/activeJahr wenn weitere Screens hinzukommen
