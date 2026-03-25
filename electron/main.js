@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
+import { existsSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { initDb, closeDb, dbGet, dbAll, dbRun } from './db.js'
 
@@ -34,6 +35,11 @@ function createWindow() {
 }
 
 // ── IPC: Datenbank ────────────────────────────────────────────────────────────
+
+ipcMain.handle('db:exists', () => {
+  const dbPath = join(app.getPath('userData'), 'steuerpilot.db')
+  return existsSync(dbPath)
+})
 
 ipcMain.handle('db:init', async (_event, password) => {
   return await initDb(password)

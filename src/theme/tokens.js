@@ -139,6 +139,11 @@ export const animation = {
   }
 }
 
+// Direkte Exports für bequemen Import in Komponenten
+export const spring = animation.spring
+export const springGentle = animation.springGentle
+export const springBouncy = animation.springBouncy
+
 // CSS Custom Properties — werden in index.css eingesetzt
 export const cssVariables = Object.entries(colors)
   .map(([key, value]) => `  --color-${key.replace(/_/g, '-')}: ${value};`)

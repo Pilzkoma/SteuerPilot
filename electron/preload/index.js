@@ -7,6 +7,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 contextBridge.exposeInMainWorld('steuerpilot', {
   // ── Datenbank ──────────────────────────────────────────────────────────────
   db: {
+    exists: () => ipcRenderer.invoke('db:exists'),
     init: (password) => ipcRenderer.invoke('db:init', password),
     close: () => ipcRenderer.invoke('db:close'),
     get: (sql, params) => ipcRenderer.invoke('db:get', sql, params),
