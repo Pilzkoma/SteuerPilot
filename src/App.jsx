@@ -1,25 +1,50 @@
 import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import LoginScreen from './screens/Login/LoginScreen.jsx'
+import OnboardingScreen from './screens/Onboarding/OnboardingScreen.jsx'
 
 // Screens werden hier nach und nach eingehängt.
-// screen: 'login' | 'onboarding' | 'app'
+// screen: 'loading' | 'login' | 'onboarding' | 'app'
 
 function App() {
   const [screen, setScreen] = useState('login')
+
+  // Nach dem Login: prüfen ob Onboarding bereits abgeschlossen
+  async function handleUnlocked() {
+    try {
+      const row = await window.steuerpilot.db.get(
+        "SELECT wert FROM einstellungen WHERE schluessel = 'onboarding_abgeschlossen'",
+        []
+      )
+      if (row?.wert === '1') {
+        setScreen('app')
+      } else {
+        setScreen('onboarding')
+      }
+    } catch {
+      setScreen('onboarding')
+    }
+  }
 
   return (
     <AnimatePresence mode="wait">
       {screen === 'login' && (
         <LoginScreen
           key="login"
-          onUnlocked={() => setScreen('onboarding')}
+          onUnlocked={handleUnlocked}
         />
       )}
 
       {screen === 'onboarding' && (
-        // Phase 2 — Platzhalter bis Onboarding gebaut ist
-        <div key="onboarding" style={{
+        <OnboardingScreen
+          key="onboarding"
+          onCompleted={() => setScreen('app')}
+        />
+      )}
+
+      {screen === 'app' && (
+        // Phase 3 — Dashboard folgt
+        <div key="app" style={{
           height: '100vh',
           display: 'flex',
           alignItems: 'center',
@@ -29,7 +54,7 @@ function App() {
           fontFamily: 'var(--font-family)',
           fontSize: '0.875rem'
         }}>
-          Eingeloggt ✓ — Onboarding folgt in Phase 2
+          Onboarding abgeschlossen ✓ — Dashboard folgt in Phase 3
         </div>
       )}
     </AnimatePresence>

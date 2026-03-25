@@ -235,4 +235,4 @@ NIEMALS  Scan-Server ohne Token-Validierung betreiben
 - electron-builder: macOS notarization braucht Apple Developer Account
 - Belegbilder: JPEG 85% (Kompromiss Dateigröße vs. OCR-Qualität)
 - Duplikat-Erkennung: gleicher Betrag + Datum ±7 Tage → Warnung anzeigen
-- iOS Companion: unter /ios-companion/ im gleichen Git-Repo
+- iOS App: unter /ios-app/ im gleichen Git-Repo (nicht "Companion" — vollwertige App)
