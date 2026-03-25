@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#adc8f5",
+                        "on-secondary": "#452b00",
+                        "on-primary": "#133155",
+                        "surface-bright": "#37374d",
+                        "surface-container-high": "#28283d",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "secondary-fixed": "#ffddb4",
+                        "secondary-container": "#dc9100",
+                        "inverse-surface": "#e2e0fc",
+                        "on-primary-container": "#8aa4cf",
+                        "error-container": "#93000a",
+                        "surface-tint": "#adc8f5",
+                        "on-tertiary": "#452b00",
+                        "inverse-on-surface": "#2f2e43",
+                        "primary-container": "#1e3a5f",
+                        "secondary-fixed-dim": "#ffb955",
+                        "on-tertiary-fixed-variant": "#60410c",
+                        "surface-container-low": "#1a1a2e",
+                        "surface-container-lowest": "#0c0c1f",
+                        "on-tertiary-fixed": "#291800",
+                        "background": "#111125",
+                        "surface-dim": "#111125",
+                        "outline": "#8e9199",
+                        "on-surface-variant": "#c4c6cf",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "primary": "#adc8f5",
+                        "primary-fixed": "#d5e3ff",
+                        "on-primary-fixed": "#001c3b",
+                        "inverse-primary": "#455f87",
+                        "surface-container": "#1e1e32",
+                        "secondary": "#ffb955",
+                        "on-secondary-fixed": "#291800",
+                        "on-secondary-container": "#4f3100",
+                        "tertiary-fixed-dim": "#edbf7f",
+                        "tertiary-fixed": "#ffddb2",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#333348",
+                        "on-surface": "#e2e0fc",
+                        "surface-variant": "#333348",
+                        "tertiary-container": "#503300",
+                        "tertiary": "#edbf7f",
+                        "on-background": "#e2e0fc",
+                        "surface": "#111125",
+                        "on-error": "#690005",
+                        "outline-variant": "#43474e",
+                        "on-tertiary-container": "#c69b5f"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface selection:bg-secondary/30">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-[#111125]/80 backdrop-blur-lg flex items-center justify-between px-6 h-16">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional man in a dark navy suit with soft studio lighting and a clean tech background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ04S1I65Tc9zCT2_6dnpDCTklAvqurBYF9hji1iEXatOIDnDRGjjLdsVyRu8C173AOCl3qzA2KkP6jYNd7L8AIzH_pNqOH3yWaS3skfHXFXkT4hrfwQTTHY4oKUJYol3O3-k0s67vK9teX8Smmih17nyC7SebtbNfWgfB3jynHs77Uuf14nrm2OdI4kRzQrIWxrx2-_C6NeYe4G3demuuhJe6rPt2MdQG2mUIuVyxCyvNCyokufZBC3Ds0RwxVwaD-iiLKR0H5e4"/>
+</div>
+<h1 class="text-slate-50 font-extrabold tracking-tighter font-['Manrope'] text-lg">SteuerPilot</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-800/50 transition-all duration-300">
+<span class="material-symbols-outlined text-amber-400">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-4 max-w-2xl mx-auto">
+<!-- Dashboard Header -->
+<section class="mb-8">
+<h2 class="text-3xl font-extrabold text-on-surface tracking-tight mb-2">Belegverwaltung</h2>
+<p class="text-on-surface-variant text-sm font-medium">Ihre digitalen Belege für das Steuerjahr 2024</p>
+</section>
+<!-- Stats Bento Section -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-surface-container-low p-5 rounded-2xl flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-secondary text-3xl">receipt_long</span>
+<div>
+<div class="text-2xl font-bold text-on-surface">128</div>
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Belege Gesamt</div>
+</div>
+</div>
+<div class="bg-primary-container p-5 rounded-2xl flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-primary text-3xl">payments</span>
+<div>
+<div class="text-2xl font-bold text-on-surface">4.290,50 €</div>
+<div class="text-[10px] uppercase tracking-widest text-on-primary-container font-bold">Absetzbar</div>
+</div>
+</div>
+</div>
+<!-- Receipts List View -->
+<div class="space-y-4">
+<!-- Receipt Item 1: Büromaterial -->
+<div class="relative group overflow-hidden rounded-2xl">
+<!-- Swipe-to-delete indicator background -->
+<div class="absolute inset-0 bg-error flex items-center justify-end px-6 z-0">
+<span class="material-symbols-outlined text-on-error">delete</span>
+</div>
+<!-- Content Layer -->
+<div class="relative z-10 bg-surface-container flex items-center p-4 gap-4 transition-transform duration-300 translate-x-0 active:-translate-x-12">
+<div class="w-14 h-14 bg-surface-container-highest rounded-xl flex-shrink-0 overflow-hidden">
+<img alt="Receipt Thumbnail" class="w-full h-full object-cover" data-alt="high-angle macro shot of a white paper receipt on a dark slate background with sharp focus and clean edges" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1nYWJdCtwQIWhwgfUpCGnr1glHOUWyw5Lh6JOeaYAEMbeA9R_cGkdteUSgxsbif_W3mzpdy2nih9gbFrVyZ_O88Z3OpPIQEr-ntVmXozvaOJHaI5xiBZ7hugBf4KwYDnqTxqkaw8nVIvpudoyEorG7-zjjecHMkH6qPZKGJrZw5NY7XSYTeuvHRPcwHEd78NaNjxpbFFfBqWj0e4tRfHawRn9X5-aOQcK4mL4keP6-ZAycJLr8rbriK-0GY5XdUrjvMd0YhkNakA"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-bold text-on-surface truncate">Büromaterial (Papier &amp; Toner)</h3>
+<span class="font-bold text-on-surface">45,90 €</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">ARBEITSMITTEL</span>
+<span class="text-on-surface-variant text-[11px] font-medium">12. Okt 2023</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Receipt Item 2: Bewirtung -->
+<div class="relative group overflow-hidden rounded-2xl">
+<div class="absolute inset-0 bg-error flex items-center justify-end px-6 z-0">
+<span class="material-symbols-outlined text-on-error">delete</span>
+</div>
+<div class="relative z-10 bg-surface-container flex items-center p-4 gap-4">
+<div class="w-14 h-14 bg-surface-container-highest rounded-xl flex-shrink-0 overflow-hidden">
+<img alt="Receipt Thumbnail" class="w-full h-full object-cover" data-alt="blurred coffee cup and a receipt on a dark wooden cafe table with warm evening ambient light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLMPM8DuFl-WAuXFljUtjYt0oNdH1kN0kSKgk-K20EwzLjyn5R6JOdj5_qblf4A5p7JIfyrAXabji5XaDYEwWozYvN_6WBRHEDspeQ8tz2Lb_Qnz09PPGX1Yanq8BLnGAC9ndW7BIQif7fPeEftJYubS1oczEFm9het_PkYDa9VKxgMtZyjKyinOdwoxksMMHfU5vreBHpkm8gwFbcg3Ws0nh8FFnySErtKNt6qYURIzpqE__z5PjmvrU-qRlt3RXyIpIqhGREmMY"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-bold text-on-surface truncate">Geschäftsessen 'Zur Post'</h3>
+<span class="font-bold text-on-surface">89,20 €</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-primary-container text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">BEWIRTUNG</span>
+<span class="text-on-surface-variant text-[11px] font-medium">10. Okt 2023</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Receipt Item 3: Fahrtkosten -->
+<div class="relative group overflow-hidden rounded-2xl">
+<div class="absolute inset-0 bg-error flex items-center justify-end px-6 z-0">
+<span class="material-symbols-outlined text-on-error">delete</span>
+</div>
+<div class="relative z-10 bg-surface-container flex items-center p-4 gap-4">
+<div class="w-14 h-14 bg-surface-container-highest rounded-xl flex-shrink-0 overflow-hidden">
+<img alt="Receipt Thumbnail" class="w-full h-full object-cover" data-alt="close up of a taxi fare receipt held by a hand in low light urban environment with city lights bokeh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCa7PY-J0nF83DzokXrj8MqgCBoprcbJBFWLtL24o-yN2OqkDwmfLZH-Tnj1vUZ3CNOiJFxqc8WgQlOd13vNMQrWF116trhgyCM9C2Onvlowq8VlWxZeGQz4PJ1GI0J6lvmUzfWICyPwVBLb6VXOhJxQODF98zZ-PfF720qnwpLGj7gz8ZuGj8kKumT6hGa3ZJOieFIU7xQQZUy0VxMYe1ZidyE1yiKNhHLbNWOd3QX7c3yPO80QaX3rSJj7DcOYzQq6dkX7l7uu4"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-bold text-on-surface truncate">Taxi Hauptbahnhof</h3>
+<span class="font-bold text-on-surface">24,50 €</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-surface-container-highest text-on-surface-variant text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">REISEKOSTEN</span>
+<span class="text-on-surface-variant text-[11px] font-medium">08. Okt 2023</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Receipt Item 4: Software -->
+<div class="relative group overflow-hidden rounded-2xl">
+<div class="absolute inset-0 bg-error flex items-center justify-end px-6 z-0">
+<span class="material-symbols-outlined text-on-error">delete</span>
+</div>
+<div class="relative z-10 bg-surface-container flex items-center p-4 gap-4">
+<div class="w-14 h-14 bg-surface-container-highest rounded-xl flex-shrink-0 overflow-hidden">
+<img alt="Receipt Thumbnail" class="w-full h-full object-cover" data-alt="digital subscription confirmation on a high-resolution screen with subtle blue light and modern UI elements" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMKrdqiroZYsmiHJIhXvkH5uOmTuCIyuNjV5mChrvEy_Dz4U2EEDS4lJwTBTAb2Qul99bUEX-xqcql-GAg6f89kpL_iKncH1DCNDyVSM_EBUP0_l5T5bJeMV0-OD1AvFWZSsC2SwkV7UxMNUHnHNqPJKJG-fpgySSHC8_oPt6_IrUtfxPgp8L2QDx4_ZHqBAQemsu75LeMyd4IeZHBGbS7Yac1WO-FClcaJF2WWv9c6roHzILxU9Eu0wa0YFo_0zfyzqRRUzrohaY"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-bold text-on-surface truncate">SaaS Abo (Cloud)</h3>
+<span class="font-bold text-on-surface">19,00 €</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">ARBEITSMITTEL</span>
+<span class="text-on-surface-variant text-[11px] font-medium">05. Okt 2023</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Prominent Floating Camera Action -->
+<button class="fixed bottom-28 right-6 w-16 h-16 bg-secondary text-on-secondary rounded-full shadow-[0_8px_32px_rgba(255,185,85,0.4)] flex items-center justify-center z-50 hover:scale-105 active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</button>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-3xl bg-[#111125]/95 backdrop-blur-2xl border-t border-white/5 shadow-[0_-8px_24px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center px-4 pt-3 pb-8 w-full">
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-300 hover:scale-105 transition-transform active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-widest mt-1">Status</span>
+</a>
+<a class="flex flex-col items-center justify-center text-amber-400 bg-amber-400/10 rounded-2xl px-4 py-2 hover:scale-105 transition-transform active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-widest mt-1">Receipts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-300 hover:scale-105 transition-transform active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-widest mt-1">Wizard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-300 hover:scale-105 transition-transform active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-widest mt-1">Export</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-300 hover:scale-105 transition-transform active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-widest mt-1">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>

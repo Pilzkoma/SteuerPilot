@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SteuerPilot - Dateneingabe Wizard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-fixed-dim": "#adc8f5",
+                        "on-secondary": "#452b00",
+                        "on-primary": "#133155",
+                        "surface-bright": "#37374d",
+                        "surface-container-high": "#28283d",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "secondary-fixed": "#ffddb4",
+                        "secondary-container": "#dc9100",
+                        "inverse-surface": "#e2e0fc",
+                        "on-primary-container": "#8aa4cf",
+                        "error-container": "#93000a",
+                        "surface-tint": "#adc8f5",
+                        "on-tertiary": "#452b00",
+                        "inverse-on-surface": "#2f2e43",
+                        "primary-container": "#1e3a5f",
+                        "secondary-fixed-dim": "#ffb955",
+                        "on-tertiary-fixed-variant": "#60410c",
+                        "surface-container-low": "#1a1a2e",
+                        "surface-container-lowest": "#0c0c1f",
+                        "on-tertiary-fixed": "#291800",
+                        "background": "#111125",
+                        "surface-dim": "#111125",
+                        "outline": "#8e9199",
+                        "on-surface-variant": "#c4c6cf",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#2d486d",
+                        "primary": "#adc8f5",
+                        "primary-fixed": "#d5e3ff",
+                        "on-primary-fixed": "#001c3b",
+                        "inverse-primary": "#455f87",
+                        "surface-container": "#1e1e32",
+                        "secondary": "#ffb955",
+                        "on-secondary-fixed": "#291800",
+                        "on-secondary-container": "#4f3100",
+                        "tertiary-fixed-dim": "#edbf7f",
+                        "tertiary-fixed": "#ffddb2",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#333348",
+                        "on-surface": "#e2e0fc",
+                        "surface-variant": "#333348",
+                        "tertiary-container": "#503300",
+                        "tertiary": "#edbf7f",
+                        "on-background": "#e2e0fc",
+                        "surface": "#111125",
+                        "on-error": "#690005",
+                        "outline-variant": "#43474e",
+                        "on-tertiary-container": "#c69b5f"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #111125;
+            color: #e2e0fc;
+            font-family: 'Manrope', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(30, 30, 50, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- Top Navigation Anchor (Manual suppression of global TopAppBar for focused wizard flow, but using brand anchor logic) -->
+<header class="fixed top-0 w-full z-50 bg-[#111125]/80 backdrop-blur-lg flex items-center justify-between px-6 h-16">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-800/50 transition-all duration-300">
+<span class="material-symbols-outlined text-slate-400">close</span>
+</button>
+<span class="text-slate-50 font-extrabold tracking-tighter text-lg">SteuerPilot</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-1.5 bg-primary-container rounded-full">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-['Manrope'] font-bold text-xs tracking-tight text-primary">Wizard Mode</span>
+</div>
+</header>
+<!-- Progress Bar Section -->
+<div class="mt-16 pt-6 px-6">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Fortschritt</span>
+<span class="text-[10px] font-semibold uppercase tracking-widest text-secondary">Schritt 4 von 12</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(255,185,85,0.4)]" style="width: 33.3%;"></div>
+</div>
+</div>
+<!-- Main Content: Wizard Screen -->
+<main class="flex-1 flex flex-col px-6 pt-10 pb-32 max-w-2xl mx-auto w-full">
+<!-- Editorial Headline -->
+<section class="mb-10">
+<h1 class="font-headline font-extrabold text-3xl md:text-4xl text-on-surface leading-tight tracking-tight mb-4">
+                Hast du im letzten Jahr Arbeitsmittel gekauft?
+            </h1>
+<p class="text-on-surface-variant font-body text-base leading-relaxed">
+                Dazu zählen Laptops, Fachliteratur oder Büromöbel, die du für deine berufliche Tätigkeit benötigst.
+            </p>
+</section>
+<!-- Input Section with Glassmorphism -->
+<section class="space-y-8">
+<div class="relative group">
+<label class="block text-xs font-bold text-primary-fixed-dim uppercase tracking-wider mb-2 ml-1">Anschaffung eingeben</label>
+<div class="relative">
+<input class="w-full bg-surface-container border-0 border-b-2 border-outline-variant focus:border-primary focus:ring-0 text-xl py-4 transition-all duration-300 placeholder:text-slate-600 rounded-t-xl" placeholder="z.B. Ergonomischer Bürostuhl" type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2">
+<span class="material-symbols-outlined text-primary">add_circle</span>
+</div>
+</div>
+</div>
+<!-- Example Chips (Semantic Chips from Design System) -->
+<div>
+<span class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Häufige Beispiele</span>
+<div class="flex flex-wrap gap-3">
+<button class="flex items-center gap-2 bg-surface-container-high hover:bg-surface-bright px-5 py-3 rounded-xl transition-all duration-200 group">
+<span class="material-symbols-outlined text-secondary text-lg">laptop_mac</span>
+<span class="font-label font-medium text-on-surface">Laptop</span>
+<span class="text-secondary font-bold ml-1">1.200€</span>
+</button>
+<button class="flex items-center gap-2 bg-surface-container-high hover:bg-surface-bright px-5 py-3 rounded-xl transition-all duration-200 group">
+<span class="material-symbols-outlined text-secondary text-lg">monitor</span>
+<span class="font-label font-medium text-on-surface">Monitor</span>
+<span class="text-secondary font-bold ml-1">299€</span>
+</button>
+<button class="flex items-center gap-2 bg-surface-container-high hover:bg-surface-bright px-5 py-3 rounded-xl transition-all duration-200 group">
+<span class="material-symbols-outlined text-secondary text-lg">menu_book</span>
+<span class="font-label font-medium text-on-surface">Fachliteratur</span>
+</button>
+</div>
+</div>
+<!-- Bento-style Info Card -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+<div class="bg-surface-container-low p-6 rounded-2xl border border-white/5">
+<div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary">info</span>
+</div>
+<h3 class="font-bold text-on-surface mb-2">Pauschalbetrag</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">Bis zu 110€ können ohne Belege als Arbeitsmittelpauschale angesetzt werden.</p>
+</div>
+<div class="relative overflow-hidden rounded-2xl group min-h-[140px]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="clean minimal home office workspace with wooden desk and morning sunlight hitting the wall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9A9WUlo_WbXWcvu0kzcYLmRYSDDLwIKm73LKX9INxn2pTBMJ79GQIIWD1gQAX5xDPc7YjzOczfzLeeNZP37AJXkkpJzZj6kfIQLYbhxmXucChJd2pNWMromV5r3kC99FlkQ4HlkTQm1ESBDeQmXLc7-MJVfFgm3SVsyUcoNkmQlpgH_L5Qd6wKNM8p1UgTIcdPE-82bVIrZbVrirMER7n_ccQ5k3ob67QzyrahlLxKEJt1utTERKUuM3TFBukeys7KI37pElhWI8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#111125] via-[#111125]/40 to-transparent p-6 flex flex-col justify-end">
+<span class="text-xs font-bold text-secondary uppercase tracking-widest">Tipp</span>
+<p class="text-xs text-white font-medium">Belege digital scannen spart Zeit.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Navigation Action Bar (Sticky Mobile Bottom) -->
+<footer class="fixed bottom-0 w-full z-50 bg-[#111125]/95 backdrop-blur-2xl border-t border-white/5 shadow-[0_-8px_24px_rgba(0,0,0,0.5)]">
+<div class="max-w-2xl mx-auto flex justify-between items-center px-6 pt-4 pb-10">
+<button class="flex items-center gap-2 text-slate-400 font-bold hover:text-slate-200 transition-colors py-3 px-4">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+<span class="font-label uppercase tracking-widest text-[11px]">Zurück</span>
+</button>
+<button class="flex items-center gap-3 bg-secondary text-on-secondary px-8 py-4 rounded-full font-bold shadow-[0_4px_16px_rgba(245,166,35,0.3)] hover:scale-105 active:scale-95 transition-all duration-200">
+<span class="font-label uppercase tracking-widest text-xs">Weiter</span>
+<span class="material-symbols-outlined">arrow_forward_ios</span>
+</button>
+</div>
+</footer>
+<!-- BottomNavBar (Hidden in Wizard Context as per Suppression Rules: Task-Focused screens hide global nav) -->
+<!-- The prompt requires the screen to be focused, thus we exclude global nav to prioritize user flow. -->
+</body></html>

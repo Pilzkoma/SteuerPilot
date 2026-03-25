@@ -1,0 +1,103 @@
+/* SteuerPilot — Global Styles */
+/* Design System: "The Financial Architect" */
+
+:root {
+  /* ── Farben ─────────────────────────────────────────────────────────────── */
+  --color-primary: #adc8f5;
+  --color-on-primary: #0d2d4f;
+  --color-primary-container: #1e3a5f;
+  --color-on-primary-container: #d3e4ff;
+  --color-primary-fixed: #d3e4ff;
+  --color-primary-fixed-dim: #adc8f5;
+
+  --color-secondary: #ffb955;
+  --color-on-secondary: #432b00;
+  --color-secondary-container: #5f3f00;
+  --color-on-secondary-container: #ffddb3;
+
+  --color-tertiary: #a8c7a0;
+  --color-on-tertiary: #0f3b12;
+  --color-tertiary-container: #1c4e22;
+  --color-on-tertiary-container: #c4e3bb;
+
+  --color-error: #ff8a80;
+  --color-on-error: #5f0000;
+  --color-error-container: #7f1d1d;
+  --color-on-error-container: #ffdad6;
+
+  --color-background: #111125;
+  --color-on-background: #e3e2f4;
+
+  --color-surface: #111125;
+  --color-surface-dim: #0e0e1c;
+  --color-surface-bright: #1e1e38;
+  --color-surface-container-lowest: #0b0b18;
+  --color-surface-container-low: #171728;
+  --color-surface-container: #1c1c30;
+  --color-surface-container-high: #222238;
+  --color-surface-container-highest: #2a2a42;
+  --color-on-surface: #e3e2f4;
+  --color-on-surface-variant: #9b99b5;
+
+  --color-outline: #4f4d6a;
+  --color-outline-variant: #2e2c45;
+
+  /* ── Typografie ──────────────────────────────────────────────────────────── */
+  --font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* ── Radius ──────────────────────────────────────────────────────────────── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1.25rem;
+  --radius-pill: 9999px;
+
+  /* ── Schatten ────────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 2px 8px rgba(13, 45, 79, 0.12);
+  --shadow-md: 0 4px 16px rgba(13, 45, 79, 0.14);
+  --shadow-lg: 0 8px 24px rgba(13, 45, 79, 0.16);
+  --shadow-float: 0 4px 24px rgba(13, 45, 79, 0.06);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 1rem;
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+/* Text in Eingabefeldern darf selektiert werden */
+input, textarea {
+  user-select: text;
+}
+
+/* Scrollbar — passend zum dunklen Theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface-container-low);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-on-surface-variant);
+}

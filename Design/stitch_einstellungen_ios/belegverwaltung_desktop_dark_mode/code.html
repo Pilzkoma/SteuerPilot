@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-surface": "#e2e0fc",
+              "inverse-primary": "#455f87",
+              "on-tertiary-container": "#c69b5f",
+              "surface": "#111125",
+              "error": "#ffb4ab",
+              "on-tertiary": "#452b00",
+              "surface-container-highest": "#333348",
+              "surface-container": "#1e1e32",
+              "on-background": "#e2e0fc",
+              "inverse-on-surface": "#2f2e43",
+              "on-tertiary-fixed": "#291800",
+              "on-error": "#690005",
+              "primary": "#adc8f5",
+              "secondary-fixed": "#ffddb4",
+              "outline": "#8e9199",
+              "surface-container-low": "#1a1a2e",
+              "primary-fixed": "#d5e3ff",
+              "on-secondary": "#452b00",
+              "surface-container-lowest": "#0c0c1f",
+              "on-error-container": "#ffdad6",
+              "tertiary-container": "#503300",
+              "inverse-surface": "#e2e0fc",
+              "primary-fixed-dim": "#adc8f5",
+              "surface-container-high": "#28283d",
+              "on-secondary-fixed-variant": "#633f00",
+              "background": "#111125",
+              "surface-tint": "#adc8f5",
+              "on-primary": "#133155",
+              "primary-container": "#1e3a5f",
+              "on-tertiary-fixed-variant": "#60410c",
+              "on-primary-container": "#8aa4cf",
+              "on-secondary-container": "#4f3100",
+              "surface-bright": "#37374d",
+              "tertiary-fixed-dim": "#edbf7f",
+              "surface-dim": "#111125",
+              "outline-variant": "#43474e",
+              "surface-variant": "#333348",
+              "on-surface-variant": "#c4c6cf",
+              "secondary": "#ffb955",
+              "tertiary-fixed": "#ffddb2",
+              "on-primary-fixed-variant": "#2d486d",
+              "secondary-fixed-dim": "#ffb955",
+              "tertiary": "#edbf7f",
+              "secondary-container": "#dc9100",
+              "on-primary-fixed": "#001c3b",
+              "on-secondary-fixed": "#291800",
+              "error-container": "#93000a"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #333348;
+        border-radius: 10px;
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary selection:text-on-secondary">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-4 h-screen w-64 border-r border-white/5 bg-[#111125] shadow-[16px_0_24px_rgba(0,0,0,0.06)] z-50">
+<div class="text-xl font-bold tracking-tighter text-[#ffb955] mb-8">SteuerPilot</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 font-manrope text-sm font-medium tracking-tight transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 font-manrope text-sm font-medium tracking-tight transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="magic_button">magic_button</span>
+<span>Wizard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-[#1e3a5f] text-[#ffb955] rounded-lg font-manrope text-sm font-medium tracking-tight transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Belege</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 font-manrope text-sm font-medium tracking-tight transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Finanzen</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 font-manrope text-sm font-medium tracking-tight transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Einstellungen</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 space-y-2 border-t border-white/5">
+<div class="flex items-center gap-3 px-4 mb-6">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close up professional portrait of a financial advisor in high key studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfy2gHVLKKk145JlHj-AaffZb67wxSivP3cOhkkM986rAgWqvRnG6zrip8UlGdeyLqNrvwW9N_aDAK3v0okF3ekGU6sqndDObmuaO-IVw3oy5v8Vv-KRU4na07NnhbWCr4-NYaAMnnD7Tv7ALtp-fA5cP1NMqmLZ7rHn8xh0A_b3W3FFyYtwRbloG599RSQusQY0egXu3uM8V9CH7LID3UEi-QNwrtjwEYzxnuPglzBdN6_fRPIlxVrqsp4xl2k8fXhHJgEb71PpY"/>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-on-surface">M. Weber</span>
+<span class="text-[10px] text-on-surface-variant">Wealth Navigator</span>
+</div>
+</div>
+<a class="flex items-center gap-3 px-4 py-2 text-[#adc8f5]/60 hover:text-[#adc8f5] text-xs transition-all" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="account_circle">account_circle</span>
+<span>Profil</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-error/60 hover:text-error text-xs transition-all" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="logout">logout</span>
+<span>Abmelden</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 h-16 flex items-center justify-end px-8 ml-64 w-[calc(100%-16rem)] bg-[#111125]/80 backdrop-blur-md border-b border-white/5 z-40">
+<div class="flex items-center gap-8">
+<nav class="flex items-center gap-6">
+<a class="text-[#adc8f5]/50 hover:text-[#adc8f5] font-manrope text-sm font-semibold transition-colors" href="#">2024</a>
+<a class="text-[#ffb955] border-b-2 border-[#ffb955] pb-1 font-manrope text-sm font-semibold" href="#">2025</a>
+</nav>
+<div class="flex items-center gap-4 text-[#adc8f5]">
+<button class="hover:text-[#ffb955] transition-colors flex items-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:text-[#ffb955] transition-colors flex items-center">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 p-8 min-h-screen">
+<div class="max-w-7xl mx-auto space-y-10">
+<!-- Header & Stats Section -->
+<div class="flex flex-col lg:flex-row justify-between items-end gap-6">
+<div class="space-y-2">
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface">Belegverwaltung</h1>
+<p class="text-on-surface-variant max-w-md">Organisieren Sie Ihre steuerlich relevanten Unterlagen mit KI-gestützter Klassifizierung.</p>
+</div>
+<div class="flex gap-4">
+<div class="bg-surface-container-low px-6 py-4 rounded-xl border-b-2 border-primary/20">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Total Belege</div>
+<div class="text-2xl font-bold text-primary">124</div>
+</div>
+<div class="bg-surface-container-low px-6 py-4 rounded-xl border-b-2 border-secondary/20">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Offen (Scan)</div>
+<div class="text-2xl font-bold text-secondary">3</div>
+</div>
+</div>
+</div>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Upload & Live Scan Zone -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+<!-- Drag & Drop -->
+<div class="bg-surface-container-high rounded-xl p-8 border-2 border-dashed border-outline-variant hover:border-primary/50 transition-all flex flex-col items-center justify-center text-center group cursor-pointer h-64">
+<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-primary" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface">Belege hochladen</h3>
+<p class="text-sm text-on-surface-variant mt-2 px-4">PDF, JPG oder PNG einfach hierher ziehen oder klicken.</p>
+</div>
+<!-- Live iPhone Scan -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border border-white/5 relative overflow-hidden">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="smartphone">smartphone</span>
+<h3 class="text-sm font-bold">iPhone Live-Scan</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+<span class="text-[10px] text-on-surface-variant font-medium">AKTIV</span>
+</div>
+</div>
+<div class="space-y-3">
+<!-- Incoming Item -->
+<div class="bg-surface-container p-3 rounded-lg flex items-center gap-3 border-l-4 border-secondary">
+<div class="w-10 h-10 bg-surface-container-highest rounded flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover opacity-60" data-alt="macro close up of a paper business receipt with printed black text on thermal paper" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUzNMP3cMFFEYf6vSUuHq2bXmIQvA5EQsVUYy3VSBpDpCZNOd48wmicyGU3AppAGjDSXuDoNHnq7eFrmhp93HcYZXuilNTe8wdaujJ_JsC9yW3qMH1aRqoeaQ4FsEYeXBxuIIVlDl1Aes43sPVQ1ubxU1hpY23q4d9zo57ItrEbYZaDYbz-5JKfc_Qlb87hGMEYPNvHoAhRChjletlxVgA8ot4Fzd-KCbGtJa5nWrh6NOeRX15_V4L5LkQOx139a9oEJ0sVt9IYAg"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-xs font-bold truncate">Edeka Markt Berlin</div>
+<div class="text-[10px] text-on-surface-variant">Gerade eben empfangen...</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="sync" style="font-variation-settings: 'wght' 700;">sync</span>
+</div>
+<!-- Incoming Item -->
+<div class="bg-surface-container/40 p-3 rounded-lg flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-highest rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-outline-variant" data-icon="image">image</span>
+</div>
+<div class="flex-1">
+<div class="h-2 w-24 bg-surface-container-highest rounded mb-2"></div>
+<div class="h-1.5 w-16 bg-surface-container-highest rounded"></div>
+</div>
+</div>
+</div>
+<div class="mt-4 text-[10px] text-center text-on-surface-variant italic">
+                            Scannen Sie Belege mit der SteuerPilot App.
+                        </div>
+</div>
+</div>
+<!-- Main Receipts Grid -->
+<div class="col-span-12 lg:col-span-8 space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-full text-xs font-bold">Alle</button>
+<button class="bg-surface-container-high text-on-surface-variant px-4 py-1.5 rounded-full text-xs hover:bg-surface-bright transition-colors">Werbungskosten</button>
+<button class="bg-surface-container-high text-on-surface-variant px-4 py-1.5 rounded-full text-xs hover:bg-surface-bright transition-colors">Arbeitsmittel</button>
+</div>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container-highest text-primary">
+<span class="material-symbols-outlined text-lg" data-icon="grid_view">grid_view</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="list">list</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Receipt Card 1 -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden hover:translate-y-[-4px] transition-all duration-300">
+<div class="relative h-40 overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" data-alt="blurred background of a modern office space with a financial document and pen in sharp focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8XLMQYxpofM-C2qR2Go64XxpBUoVbExTOSVbmTRdo0fYaG0fUZp1e-5WELoqzbgBJDZ65OvVqHAcZgdE0OjLVCP-j_psZT8P8cRMx3_c_mbxUVLjBUZFAiDafcTkAI7zUajKMF2bmq3iPsKw2XfyDquhVqM92F0fbM3VSzbhBR9fkZnaHNJzkYppMhxkE5l5AjQf-yKETovzJtEusynNgtZ9J0PAWCbNb0FIZ9_NwzWiRuO7DiUKbDmJhn_pLGqkJBGeGHW2L25M"/>
+<div class="absolute top-3 left-3 bg-tertiary-container text-on-tertiary-container px-2 py-1 rounded text-[10px] font-bold tracking-tight">
+                                    Arbeitsmittel
+                                </div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+</div>
+<div class="p-4 space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-sm truncate">Apple Store - MacBook Pro</h4>
+<span class="text-xs font-bold text-secondary">2.499,00 €</span>
+</div>
+<div class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+                                    12. Mai 2025
+                                </div>
+</div>
+</div>
+<!-- Receipt Card 2 -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden hover:translate-y-[-4px] transition-all duration-300">
+<div class="relative h-40 overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" data-alt="financial stock chart on a screen blurred in the background with a paper receipt in the foreground" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDePCQW6Wrwx3NAN261cH1Y9UdPbuRDgibQAKjTCL5jI3WzGXKc09_DvBTcgBuQf5EefV92zHFDzG-rqeBu4gho0z6D70P7aV0tG-I8I8zzICwR1ftPvMtftB2daMmatDEswMkcepS1CJpNA0DWykwUhZYOmbfphH8uKn0ilHFy1n4LhmDZrMI6cOTvynD_Vc3eFHpHS-vlSO66JZXq-KAB-HLUHa9_aNojbzy1XGGt7Wxr5V1u20iFXr_v3PliIpk092ksM-255A4"/>
+<div class="absolute top-3 left-3 bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold tracking-tight">
+                                    Werbungskosten
+                                </div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+</div>
+<div class="p-4 space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-sm truncate">Deutsche Bahn Ticket</h4>
+<span class="text-xs font-bold text-secondary">84,50 €</span>
+</div>
+<div class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+                                    08. Mai 2025
+                                </div>
+</div>
+</div>
+<!-- Receipt Card 3 -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden hover:translate-y-[-4px] transition-all duration-300">
+<div class="relative h-40 overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" data-alt="close up of various colorful sticky notes and office supplies on a dark desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc7Wf62ZJaPQP6HZS1mnhLZ5NIgDpb-BIgUiGggvvv4zHZpCOKQuZBGGn2JPipKqMCSCVtQ4rYjVk_bDu-NP_q12FvnXWCYwQ48q5qnSGJNQZ3xg5jGSTcZjE3pJxDOHWyL_28nYDiRF8aTmLDkSx5uuMCNV8-10mkeC1VRtVavMuPECreB9YdzA39RsD156lUGJQ8d6eud6Ozn0Q38JfWwmJbR_t3SVwaRzPsxa6WnwPqhs0lx_G64kgq5q-ImtbhxCx-LZ4p3tg"/>
+<div class="absolute top-3 left-3 bg-tertiary-container text-on-tertiary-container px-2 py-1 rounded text-[10px] font-bold tracking-tight">
+                                    Arbeitsmittel
+                                </div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+</div>
+<div class="p-4 space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-sm truncate">Bürobedarf Müller</h4>
+<span class="text-xs font-bold text-secondary">12,30 €</span>
+</div>
+<div class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+                                    02. Mai 2025
+                                </div>
+</div>
+</div>
+<!-- Receipt Card 4 -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden hover:translate-y-[-4px] transition-all duration-300">
+<div class="relative h-40 overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" data-alt="open books on a library table with soft warm light coming from the side" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMrQl1gNTNgkRR_9lS76zaJSYtv2w_-XtdSFoJv7ANDMp0CBC_xoKhKi7wn3rJdme9pM0XpKJSDOi8_Oelp_HP5EfcM_ZM1ELSKsf0llaKtjBNUBfATCO7yLZEQEVcClG2dCjhkT_dcxbWIOELCJwm-ncZzrmj3NvShAl7UDsp1vE0Ht966eLhVfPkHxC1vF3okwZVQ3I8qQziZe4JQV5_OAdT2Hmeiv68v5mbMb-Bcv9iIuJ6WJGR38joe4BRYeOSkwn0UaDt08U"/>
+<div class="absolute top-3 left-3 bg-error-container text-on-error-container px-2 py-1 rounded text-[10px] font-bold tracking-tight">
+                                    Fortbildung
+                                </div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+</div>
+<div class="p-4 space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-sm truncate">Amazon Fachliteratur</h4>
+<span class="text-xs font-bold text-secondary">45,99 €</span>
+</div>
+<div class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+                                    28. April 2025
+                                </div>
+</div>
+</div>
+<!-- Receipt Card 5 -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden hover:translate-y-[-4px] transition-all duration-300">
+<div class="relative h-40 overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" data-alt="modern office meeting room with wooden table and glass walls in soft focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9-TnaWVuaeXN_BnENCQteRjCpwKTmD2sfyNI96NGhiCk6O87SppbDat0JV5JWCPsMEJ4Q2ce8eDVJMeY-BnFRhAMnb93Sk2Fl_E6XRefpod48497G7iXlZ7DqhbLB0JTzkMJlS-SQpLNEQmfpd-3gNXA7D0xpCqmaNjuHGxF6maSzqlzcwVk6crs2OdM2nlpBcGaWmAPhFimDNOmtIjx9OngJmjHmsZm57gisIKeL6PY-GuUaJsUWa_-J_nzQGcBV53ecaWee7tY"/>
+<div class="absolute top-3 left-3 bg-on-tertiary-fixed-variant/50 backdrop-blur-sm text-white px-2 py-1 rounded text-[10px] font-bold tracking-tight">
+                                    Sonstiges
+                                </div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+</div>
+<div class="p-4 space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-sm truncate">Coworking Space Fee</h4>
+<span class="text-xs font-bold text-secondary">150,00 €</span>
+</div>
+<div class="text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="calendar_today">calendar_today</span>
+                                    25. April 2025
+                                </div>
+</div>
+</div>
+<!-- Placeholder Empty State / Quick Action -->
+<div class="border-2 border-dashed border-white/5 rounded-xl flex flex-col items-center justify-center text-on-surface-variant/40 hover:bg-surface-container-low hover:text-primary transition-all group cursor-pointer h-[244px]">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="add_circle">add_circle</span>
+<span class="text-xs font-bold">Neuer Beleg</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Contextual Assistant (AI Insights) -->
+<section class="bg-primary-container/10 border border-primary/10 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6">
+<div class="bg-primary-container p-4 rounded-full">
+<span class="material-symbols-outlined text-3xl text-primary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex-1 space-y-1">
+<h3 class="text-lg font-bold text-on-primary-container">SteuerPilot KI Analyse</h3>
+<p class="text-sm text-on-surface-variant">Wir haben 3 Belege gefunden, die potenziell als 'Sonderausgaben' deklariert werden können. Möchten Sie diese prüfen?</p>
+</div>
+<button class="bg-secondary text-on-secondary px-6 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition-transform">
+                    Vorschläge prüfen
+                </button>
+</section>
+</div>
+</main>
+<!-- Notification Toast (Feedback Loop) -->
+<div class="fixed bottom-8 right-8 bg-surface-container-highest border border-white/10 rounded-xl p-4 shadow-2xl flex items-center gap-4 max-w-sm">
+<div class="bg-secondary/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="text-xs font-bold">Scan erfolgreich</div>
+<div class="text-[10px] text-on-surface-variant">"DB Reisequittung" wurde analysiert.</div>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</div>
+</body></html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-surface": "#e2e0fc",
+              "inverse-primary": "#455f87",
+              "on-tertiary-container": "#c69b5f",
+              "surface": "#111125",
+              "error": "#ffb4ab",
+              "on-tertiary": "#452b00",
+              "surface-container-highest": "#333348",
+              "surface-container": "#1e1e32",
+              "on-background": "#e2e0fc",
+              "inverse-on-surface": "#2f2e43",
+              "on-tertiary-fixed": "#291800",
+              "on-error": "#690005",
+              "primary": "#adc8f5",
+              "secondary-fixed": "#ffddb4",
+              "outline": "#8e9199",
+              "surface-container-low": "#1a1a2e",
+              "primary-fixed": "#d5e3ff",
+              "on-secondary": "#452b00",
+              "surface-container-lowest": "#0c0c1f",
+              "on-error-container": "#ffdad6",
+              "tertiary-container": "#503300",
+              "inverse-surface": "#e2e0fc",
+              "primary-fixed-dim": "#adc8f5",
+              "surface-container-high": "#28283d",
+              "on-secondary-fixed-variant": "#633f00",
+              "background": "#111125",
+              "surface-tint": "#adc8f5",
+              "on-primary": "#133155",
+              "primary-container": "#1e3a5f",
+              "on-tertiary-fixed-variant": "#60410c",
+              "on-primary-container": "#8aa4cf",
+              "on-secondary-container": "#4f3100",
+              "surface-bright": "#37374d",
+              "tertiary-fixed-dim": "#edbf7f",
+              "surface-dim": "#111125",
+              "outline-variant": "#43474e",
+              "surface-variant": "#333348",
+              "on-surface-variant": "#c4c6cf",
+              "secondary": "#ffb955",
+              "tertiary-fixed": "#ffddb2",
+              "on-primary-fixed-variant": "#2d486d",
+              "secondary-fixed-dim": "#ffb955",
+              "tertiary": "#edbf7f",
+              "secondary-container": "#dc9100",
+              "on-primary-fixed": "#001c3b",
+              "on-secondary-fixed": "#291800",
+              "error-container": "#93000a"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      body { font-family: 'Manrope', sans-serif; }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-secondary/30">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-4 bg-[#111125] h-screen w-64 border-r border-white/5 shadow-[16px_0_24px_rgba(0,0,0,0.06)] z-50">
+<div class="text-xl font-bold tracking-tighter text-[#ffb955] mb-8 px-4">SteuerPilot</div>
+<nav class="flex-1 space-y-2">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 bg-[#1e3a5f] text-[#ffb955] rounded-lg transition-all duration-300 font-manrope text-sm font-medium tracking-tight group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 rounded-lg transition-all duration-300 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="magic_button">magic_button</span>
+<span>Wizard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 rounded-lg transition-all duration-300 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Belege</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 rounded-lg transition-all duration-300 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Finanzen</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 rounded-lg transition-all duration-300 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Einstellungen</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 border-t border-white/5 space-y-2">
+<div class="flex items-center gap-3 px-4 py-3 mb-2">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Nutzerprofil" data-alt="close-up portrait of a professional businessman in a sleek dark suit with soft studio lighting and a neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFHSKD06Hmc6EXjvvy46-NLvfzLLlLF_-lMiL1imNbLJ6XRn4nhFiP56aola1I2J4EPCJ2z94fgsN5_ErIdzPQxZYpRMcMzDcerd8UoprsXTTKZHWxMFNiUkfQfQhH1bM2tAEiQ0W41yIYJf_l_kXxczeYAqYNsNEDZnP96-bsDDX5f_WEhoNsL_2ohQ9qGtSQqCWAX5OGCipxUgI8igwKRRXIIxGBKTEoUr8RPCsSuoBwsYx6m2tSHPs9lVbrmLYB_NthDzvVYKQ"/>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-on-surface">M. Weber</span>
+<span class="text-[10px] text-on-surface-variant">Wealth Navigator</span>
+</div>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 rounded-lg transition-all duration-300 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span>Profil</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#adc8f5]/60 hover:text-[#adc8f5] hover:bg-white/5 rounded-lg transition-all duration-300 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Abmelden</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen bg-surface-container-lowest">
+<!-- TopAppBar -->
+<header class="flex items-center justify-end px-8 w-full h-16 border-b border-white/5 bg-[#111125]/80 backdrop-blur-md sticky top-0 z-40">
+<div class="flex items-center gap-8 mr-auto px-4">
+<div class="flex items-center gap-1 font-manrope text-sm font-semibold">
+<button class="text-[#ffb955] border-b-2 border-[#ffb955] pb-1 px-2">2024</button>
+<button class="text-[#adc8f5]/50 hover:text-[#adc8f5] transition-colors pb-1 px-2">2025</button>
+</div>
+</div>
+<div class="flex items-center gap-6 text-[#adc8f5]">
+<button class="hover:text-[#ffb955] transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:text-[#ffb955] transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-white/10 mx-2"></div>
+<div class="text-xs font-medium opacity-60">Status: <span class="text-secondary">Synchronisiert</span></div>
+</div>
+</header>
+<div class="p-8 max-w-7xl mx-auto space-y-8">
+<!-- Hero Data Section: Editorial Layout -->
+<section class="grid grid-cols-12 gap-8 items-end">
+<div class="col-span-12 md:col-span-7">
+<h2 class="text-on-surface-variant text-sm font-bold tracking-widest uppercase mb-2">Portfolio Overview</h2>
+<div class="flex items-baseline gap-4">
+<h1 class="text-6xl font-extrabold tracking-tighter text-on-surface">Geschätzte Rückerstattung: 1.240 €</h1>
+<div class="flex items-center text-secondary bg-secondary/10 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="trending_up">trending_up</span>
+<span class="text-xs font-bold">+12%</span>
+</div>
+</div>
+<p class="mt-6 text-on-surface-variant max-w-md leading-relaxed">
+                        Ihre Steuerlast für das Jahr 2024 wurde basierend auf den aktuell eingereichten Belegen und Pauschalen kalkuliert.
+                    </p>
+</div>
+<div class="col-span-12 md:col-span-5 space-y-4">
+<div class="bg-surface-container p-6 rounded-xl border border-white/5 relative overflow-hidden group hover:bg-surface-container-high transition-colors">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl" data-icon="event">event</span>
+</div>
+<div class="relative z-10">
+<div class="flex justify-between items-center mb-4">
+<span class="text-xs font-bold text-on-surface-variant tracking-widest uppercase">Steuerjahr 2024 Fortschritt</span>
+<span class="text-secondary font-bold">68%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary w-[68%]"></div>
+</div>
+<div class="mt-4 flex gap-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">
+<span>34 Belege erfasst</span>
+<span>•</span>
+<span>12 Kategorien offen</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Grid Layout for Tasks & Deadline -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Quick Access Tiles (Asymmetric) -->
+<div class="md:col-span-2 grid grid-cols-2 gap-4">
+<button class="col-span-2 bg-primary-container/40 hover:bg-primary-container/60 transition-all p-8 rounded-xl flex flex-col justify-between group h-48 border border-primary/10">
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="magic_button">magic_button</span>
+<div class="text-left">
+<h3 class="text-xl font-bold text-on-primary-container">Weiter ausfüllen</h3>
+<p class="text-sm text-on-primary-container/60">Setzen Sie Ihre Erklärung bei 'Werbungskosten' fort.</p>
+</div>
+</button>
+<button class="bg-surface-container-high hover:bg-surface-bright transition-all p-6 rounded-xl flex flex-col gap-4 border border-white/5">
+<span class="material-symbols-outlined text-2xl text-secondary" data-icon="document_scanner">document_scanner</span>
+<span class="text-sm font-bold text-left">Beleg scannen</span>
+</button>
+<button class="bg-surface-container-high hover:bg-surface-bright transition-all p-6 rounded-xl flex flex-col gap-4 border border-white/5">
+<span class="material-symbols-outlined text-2xl text-primary" data-icon="csv">csv</span>
+<span class="text-sm font-bold text-left">CSV importieren</span>
+</button>
+</div>
+<!-- Deadline Card -->
+<div class="bg-[#111125] p-8 rounded-xl border-l-4 border-secondary flex flex-col justify-between shadow-2xl relative overflow-hidden">
+<div class="absolute -top-4 -right-4 w-24 h-24 bg-secondary/5 rounded-full blur-2xl"></div>
+<div>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="alarm">alarm</span>
+<h3 class="text-sm font-bold tracking-widest uppercase text-on-surface-variant">Frist-Warnung</h3>
+</div>
+<div class="space-y-1">
+<p class="text-4xl font-extrabold text-on-surface">31. Oktober</p>
+<p class="text-on-surface-variant text-sm">Abgabefrist für 2024</p>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-white/5">
+<div class="flex justify-between items-end">
+<div>
+<span class="block text-[10px] text-on-surface-variant uppercase font-bold tracking-widest mb-1">Verbleibende Zeit</span>
+<div class="flex gap-3 text-2xl font-bold font-mono text-secondary">
+<span>42<span class="text-[10px] ml-1 opacity-50">T</span></span>
+<span>12<span class="text-[10px] ml-1 opacity-50">S</span></span>
+</div>
+</div>
+<button class="bg-secondary text-on-secondary px-4 py-2 rounded-full text-xs font-bold hover:brightness-110 transition-all active:scale-95">
+                                Jetzt abschließen
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Insights (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Large Stats Card -->
+<div class="md:col-span-2 bg-surface-container p-6 rounded-xl border border-white/5 flex flex-col justify-between min-h-[280px]">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-lg">Top Abzugspositionen</h3>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="info">info</span>
+</div>
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="home_work">home_work</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between text-xs font-bold mb-1">
+<span>Home Office Pauschale</span>
+<span>600,00 €</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full"><div class="h-full bg-primary w-[80%]"></div></div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-tertiary-container/30 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="commute">commute</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between text-xs font-bold mb-1">
+<span>Entfernungspauschale</span>
+<span>425,50 €</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full"><div class="h-full bg-tertiary w-[55%]"></div></div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-on-primary-container/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="school">school</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between text-xs font-bold mb-1">
+<span>Fortbildungskosten</span>
+<span>214,50 €</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full"><div class="h-full bg-on-primary-container w-[30%]"></div></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Belege -->
+<div class="bg-surface-container p-6 rounded-xl border border-white/5 md:col-span-2 overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-bold text-lg">Letzte Belege</h3>
+<button class="text-xs text-primary font-bold hover:underline">Alle anzeigen</button>
+</div>
+<div class="divide-y divide-white/5">
+<div class="py-4 flex items-center justify-between group hover:bg-white/5 px-2 -mx-2 rounded-lg transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="receipt_long">receipt_long</span>
+<div>
+<p class="text-sm font-bold">Apple Store Berlin</p>
+<p class="text-[10px] text-on-surface-variant">Arbeitsmittel • Vor 2 Std.</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold">899,00 €</p>
+<span class="text-[10px] text-primary px-2 py-0.5 bg-primary/10 rounded">Verarbeitet</span>
+</div>
+</div>
+<div class="py-4 flex items-center justify-between group hover:bg-white/5 px-2 -mx-2 rounded-lg transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="receipt_long">receipt_long</span>
+<div>
+<p class="text-sm font-bold">Deutsche Bahn AG</p>
+<p class="text-[10px] text-on-surface-variant">Reisekosten • Gestern</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold">124,50 €</p>
+<span class="text-[10px] text-primary px-2 py-0.5 bg-primary/10 rounded">Verarbeitet</span>
+</div>
+</div>
+<div class="py-4 flex items-center justify-between group hover:bg-white/5 px-2 -mx-2 rounded-lg transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="description">description</span>
+<div>
+<p class="text-sm font-bold">Spendenquittung DRK</p>
+<p class="text-[10px] text-on-surface-variant">Sonderausgaben • 12.08.</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold">50,00 €</p>
+<span class="text-[10px] text-secondary px-2 py-0.5 bg-secondary/10 rounded">Prüfung</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Sticky Progress Bar (Bottom) -->
+<div class="fixed bottom-0 left-64 right-0 p-4 z-30">
+<div class="max-w-7xl mx-auto bg-[#1e1e32]/90 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-2xl flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full border-4 border-primary border-t-transparent flex items-center justify-center">
+<span class="text-[10px] font-bold">68%</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Zwischenbericht 2024</p>
+<p class="text-[10px] text-on-surface-variant">Noch 3 Abschnitte bis zur Abgabe bereit.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-2 rounded-full text-xs font-bold text-primary border border-primary/20 hover:bg-primary/10 transition-all">Details ansehen</button>
+<button class="px-6 py-2 rounded-full text-xs font-bold bg-primary text-on-primary hover:brightness-110 transition-all shadow-lg shadow-primary/20">Wizard starten</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>
