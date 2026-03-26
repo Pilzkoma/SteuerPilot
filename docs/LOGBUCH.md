@@ -2,6 +2,37 @@
 
 ---
 
+## 2026-03-26 — Phase 9: Optimierungshinweise implementiert
+
+### Was wurde gebaut
+
+Kompletter "Optimierungshinweise"-Screen inkl. Engine-Funktion, UI-Komponente und Navigation.
+
+**Engine (`src/engine/optimierung.js`):**
+- Pure-JS-Funktion `berechneOptimierungshinweise(daten, nutzertyp, jahr)` — kein Electron, vollständig unit-testbar
+- 7 regelbasierte Hinweise: Homeoffice, Fahrtkosten (nur Angestellte), Krankenversicherung, Arbeitsmittel, Altersvorsorge, Spenden, Werbungskosten unter Pauschbetrag (nur Angestellte)
+- Sortierung: hoch → mittel → niedrig
+- 12 Vitest-Tests, alle grün
+
+**Screen (`src/screens/Optimierung/OptimierungScreen.jsx`):**
+- Lädt Wizard-Draft aus `wizard_fortschritt`-Tabelle
+- Rendert Hinweis-Karten mit Prioritäts-Badge, Beschreibung, optionalem Einsparpotenzial und "Jetzt eintragen"-Button → navigiert zum Wizard
+- Leer-State wenn noch kein Draft vorhanden
+- Spring-Animationen, Design Tokens, korrekte Fehlerbehandlung + abort-Flag gegen Race Conditions
+
+**Navigation:**
+- "Optimierungshinweise" als neuer Eintrag in AppShell-Sidebar zwischen Umsatz und PDF Export
+
+### Entscheidungen
+
+- `werbungskosten_pauschbetrag`-Hinweis nur für Angestellte — Freelancer kennen keinen Arbeitnehmer-Pauschbetrag
+- `betriebsausgaben`-Hinweise für Freelancer/Selbstständige: bewusst noch nicht implementiert (TODO-Kommentar im Code)
+- `EmptyState` zeigt "Daten eingeben"-CTA — unterscheidet noch nicht zwischen "kein Draft" und "alles ausgefüllt" (Phase-2-Verbesserung)
+
+### Offene Punkte / Nächste Schritte
+
+---
+
 ## 2026-03-26 — Design: Optimierungshinweise
 
 ### Was wurde gemacht
@@ -28,7 +59,7 @@ Design und Implementierungsplan für den neuen "Optimierungshinweise"-Screen ers
 
 ### Offene Punkte / Nächste Schritte
 
-- **Optimierungshinweise implementieren** — Plan liegt unter `docs/superpowers/plans/2026-03-26-optimierungshinweise.md`
+- ~~Optimierungshinweise implementieren~~ — erledigt (2026-03-26)
 - Jahresübernahme & Vergleich
 - Einstellungen (Passwort ändern, Jetson, Sync-Status)
 - iOS App — erst nach expliziter Rückfrage

@@ -250,12 +250,12 @@ NIEMALS  Scan-Server ohne Token-Validierung betreiben
 
 ## Nächste Schritte (Reihenfolge)
 
-1. **Optimierungshinweise** — Design + Plan fertig (`docs/superpowers/plans/2026-03-26-optimierungshinweise.md`). Implementierung ausstehend.
-2. **Jahresübernahme & Vergleich** — Vorjahresdaten übernehmen, Jahresvergleich im Dashboard
+1. **Jahresübernahme & Vergleich** — Vorjahresdaten übernehmen, Jahresvergleich im Dashboard
 3. **Einstellungen** (Passwort ändern, Jetson-Verbindung, Sync-Status)
 4. **iOS App** — NUR nach expliziter Rückfrage beim User
 
 ### Bereits erledigt
+- ✅ Optimierungshinweise (Phase 9) — Engine `berechneOptimierungshinweise()`, Screen, Navigation
 - ✅ PDF-Export (Phase 7)
 - ✅ Dashboard-Navigation: MetricCards + Checkliste-Einträge klickbar (Phase 8)
 - ✅ Manueller Beleg: "Manuell hinzufügen" in BelegeScreen (Phase 8)
