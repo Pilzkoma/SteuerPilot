@@ -101,7 +101,7 @@ Erscheint im WizardScreen-Header, **nur wenn:**
 
 ### Jahr löschen
 
-**Geste:** Horizontaler Swipe (Mausdrag nach links) auf einem Jahr-Eintrag im JahrSelector-Dropdown → roter "Löschen"-Bereich erscheint rechts → Loslassen → Sicherheitsdialog.
+**UI:** Kleines Löschen-Icon (Mülleimer) rechts neben jedem Jahr-Eintrag im JahrSelector-Dropdown — erscheint beim Hover auf den Eintrag. Klick → Sicherheitsdialog.
 
 **Dialog:** "Jahr {jahr} und alle zugehörigen Daten unwiderruflich löschen?" — Bestätigen / Abbrechen
 
