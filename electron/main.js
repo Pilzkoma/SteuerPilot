@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join, extname } from 'path'
 import { existsSync, mkdirSync, writeFileSync, readFileSync, unlinkSync } from 'fs'
+import { promises as fs } from 'fs'
 import { randomUUID } from 'crypto'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { initDb, closeDb, dbGet, dbAll, dbRun } from './db.js'
@@ -154,6 +155,61 @@ ipcMain.handle('pdf:save', async (_event, buffer, defaultFilename) => {
 
   writeFileSync(filePath, Buffer.from(buffer))
   return true
+})
+
+// ── CSV ──────────────────────────────────────────────────────────────────────
+
+ipcMain.handle('csv:read-file', async (event, filePath) => {
+  const buf = await fs.readFile(filePath)
+  // Lese als latin1 (sicher für alle Byte-Werte, inkl. ISO-8859-1)
+  const latin1Content = buf.toString('latin1')
+  const firstLine = latin1Content.split('\n')[0]
+  // N26 ist UTF-8 + Komma-getrennt — alle anderen deutschen Banken: latin1
+  const isN26 = firstLine.includes('Betrag (EUR)') || (firstLine.includes('Transaktionstyp') && firstLine.includes('Empfänger'))
+  const content = isN26 ? buf.toString('utf8') : latin1Content
+  return { content }
+})
+
+// ── Transaktionen ─────────────────────────────────────────────────────────────
+
+ipcMain.handle('transaktionen:load', async (event, steuerjahrId) => {
+  return dbAll(
+    'SELECT * FROM transaktionen WHERE steuerjahr_id = ? ORDER BY datum DESC',
+    [steuerjahrId]
+  )
+})
+
+ipcMain.handle('transaktionen:save-batch', async (event, { transaktionen, steuerjahrId }) => {
+  let inserted = 0
+  let duplicates = 0
+  for (const t of transaktionen) {
+    const existing = await dbGet(
+      'SELECT id FROM transaktionen WHERE steuerjahr_id = ? AND datum = ? AND betrag = ? AND empfaenger = ? LIMIT 1',
+      [steuerjahrId, t.datum, t.betrag, t.empfaenger]
+    )
+    if (existing) {
+      duplicates++
+      continue
+    }
+    await dbRun(
+      `INSERT INTO transaktionen (steuerjahr_id, datum, betrag, typ, empfaenger, verwendungszweck, kategorie, abzugsfaehig, bank)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [steuerjahrId, t.datum, t.betrag, t.typ, t.empfaenger, t.verwendungszweck, t.kategorie, t.abzugsfaehig, t.bank]
+    )
+    inserted++
+  }
+  return { inserted, duplicates }
+})
+
+ipcMain.handle('transaktionen:update', async (event, { id, kategorie, abzugsfaehig, notiz }) => {
+  return dbRun(
+    `UPDATE transaktionen SET kategorie = ?, abzugsfaehig = ?, notiz = ?, zuletzt_geaendert = datetime('now') WHERE id = ?`,
+    [kategorie, abzugsfaehig, notiz ?? null, id]
+  )
+})
+
+ipcMain.handle('transaktionen:delete', async (event, id) => {
+  return dbRun('DELETE FROM transaktionen WHERE id = ?', [id])
 })
 
 // ── App Lifecycle ─────────────────────────────────────────────────────────────

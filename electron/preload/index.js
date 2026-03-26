@@ -26,5 +26,18 @@ contextBridge.exposeInMainWorld('steuerpilot', {
   // ── PDF Export ─────────────────────────────────────────────────────────────
   pdf: {
     save: (buffer, filename) => ipcRenderer.invoke('pdf:save', buffer, filename)
+  },
+
+  // ── CSV ────────────────────────────────────────────────────────────────────
+  csv: {
+    readFile: (filePath) => ipcRenderer.invoke('csv:read-file', filePath)
+  },
+
+  // ── Transaktionen ──────────────────────────────────────────────────────────
+  transaktionen: {
+    load:      (steuerjahrId) => ipcRenderer.invoke('transaktionen:load', steuerjahrId),
+    saveBatch: (payload)      => ipcRenderer.invoke('transaktionen:save-batch', payload),
+    update:    (payload)      => ipcRenderer.invoke('transaktionen:update', payload),
+    delete:    (id)           => ipcRenderer.invoke('transaktionen:delete', id)
   }
 })
