@@ -153,6 +153,25 @@ async function createSchema(database) {
         )
       `)
 
+      // ── Transaktionen (Bank-Importe, OCR-Extrakte) ─────────────────────────────
+      database.run(`
+        CREATE TABLE IF NOT EXISTS transaktionen (
+          id                INTEGER PRIMARY KEY AUTOINCREMENT,
+          steuerjahr_id     INTEGER NOT NULL REFERENCES steuerjahre(id),
+          datum             TEXT NOT NULL,
+          betrag            REAL NOT NULL,
+          typ               TEXT NOT NULL DEFAULT 'ausgabe',
+          empfaenger        TEXT,
+          verwendungszweck  TEXT,
+          kategorie         TEXT NOT NULL DEFAULT 'sonstige',
+          abzugsfaehig      INTEGER NOT NULL DEFAULT 0,
+          notiz             TEXT,
+          bank              TEXT,
+          erstellt_am       TEXT NOT NULL DEFAULT (datetime('now')),
+          zuletzt_geaendert TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `)
+
       // ── Einstellungen ────────────────────────────────────────────────────────
       database.run(`
         CREATE TABLE IF NOT EXISTS einstellungen (
