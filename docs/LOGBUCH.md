@@ -2,6 +2,81 @@
 
 ---
 
+## 2026-03-26 — Phase 8: Dashboard-Navigation, Manueller Beleg, Manueller Umsatz
+
+### Was wurde gebaut
+
+**Dashboard-Navigation:**
+- MetricCards (Einnahmen, Werbungskosten, Belege) sind jetzt klickbar — Hover-Effekt + Cursor Pointer
+- Einnahmen + Werbungskosten → navigiert zu Wizard, Belege → navigiert zu BelegeScreen
+- Checklist-Einträge die noch nicht abgeschlossen sind und ein bekanntes Ziel haben navigieren beim Klick zum jeweiligen Screen (Einnahmen/Werbungskosten → Wizard, Belege → Belege)
+- `App.jsx` reicht `onNavigate={setActiveNav}` an DashboardScreen durch
+
+**Manueller Beleg:**
+- "Manuell hinzufügen" Button im BelegeScreen-Header (rechts neben dem Titel)
+- Öffnet das bestehende DetailPanel ohne Datei — leeres Formular mit vorausgefülltem heutigem Datum
+- Speichert in `ausgaben` + `belege` mit leerem `dateipfad`/`dateiname`
+- Vorschau-Bereich im DetailPanel wird ausgeblendet wenn kein Dateipfad vorhanden
+- `handleDelete` guard: `deleteFile` wird nur aufgerufen wenn `dateipfad` gesetzt ist
+
+**Manueller Umsatz:**
+- "Manuell" Button im UmsatzScreen-Header (neben "CSV importieren")
+- Inline-Formular direkt im Screen (kein Modal): Typ (Einnahme/Ausgabe), Datum, Betrag, Empfänger, Kategorie, Notiz
+- Kategorien passen sich dem Typ an (Einnahmen: lohn/honorar/sonstige; Ausgaben: fahrtkosten/homeoffice/…)
+- Speichert via `transaktionen:save-batch` — Beträge bei Ausgaben automatisch negativ
+- Bank-Feld wird auf `'manuell'` gesetzt
+
+### Entscheidungen
+
+- Checklist-Einträge für "Profil" und "Steuer-ID" sind nicht klickbar (kein direkter Screen für sie in v1)
+- Exit-Animation beim manuellen Umsatz-Formular entfällt ohne AnimatePresence — akzeptabler Trade-off
+- Manuelle Belege bekommen `ocr_status: 'manuell'` und werden mit dem OcrBadge "Manuell" angezeigt
+
+### Offene Punkte / Nächste Schritte
+
+- **Optimierungshinweise** (nächste Session)
+- Jahresübernahme & Vergleich
+- Einstellungen (Passwort ändern, Jetson, Sync-Status)
+- iOS App — erst nach expliziter Rückfrage
+
+---
+
+## 2026-03-26 — Phase 7: Umsatz-Dashboard + Bugfix db:init
+
+### Was wurde gebaut
+
+- **Umsatz-Dashboard vollständig** (Task 10 abgeschlossen): Umsatz-Tab in der Sidebar aktiviert (`available: true`), `UmsatzScreen` in `App.jsx` eingebunden. Der komplette CSV-Import-Flow mit Bank-Erkennung, Vorschau und Tabelle ist damit erreichbar.
+
+### Bug: db:init-Handler falsch geändert und wieder revertiert
+
+Im Versuch einen FATAL ERROR (napi_throw bei falschem Passwort) zu beheben, wurde der `db:init` IPC Handler fälschlicherweise in try/catch gewickelt, der bei Fehler `{success: false}` zurückgab. Das brach den Login-Flow:
+
+- `LoginScreen` prüft den Return-Value nicht — es erwartet eine Exception
+- Mit `{success: false}` als Rückgabe wurde `onUnlocked()` trotzdem aufgerufen
+- DB war nicht geöffnet → `handleUnlocked()` schlug fehl → App landete im Onboarding
+- INSERT dort schlug fehl → "Fehler beim Speichern"-Toast
+- User musste Onboarding neu durchlaufen
+
+**Fix:** Handler auf Original revertiert (`return await initDb(password)` — kein try/catch). Das FATAL ERROR im Terminal ist ein kosmetisches Problem der nativen SQLCipher-Library bei falschem Passwort, kein echter App-Absturz. Behoben bleibt: `instance.close()` vor `reject()` in `db.js` — verhindert offene DB-Handles.
+
+### Entscheidungen
+
+- `db:init` IPC Handler darf KEIN try/catch haben — der Fehler muss als Exception durchkommen
+- SQLCipher napi_throw FATAL im Terminal bei falschem Passwort ist nicht behebbar ohne Library-Patch — akzeptabler Zustand
+
+### Offene Punkte / Nächste Schritte
+
+Drei neue Features wurden besprochen, geplant und vom User bestätigt:
+
+1. **PDF-Export testen** — bereits gebaut (Phase 6), noch nicht vom User getestet
+2. **Dashboard-Navigation** — Metric-Cards + Checkliste-Einträge klickbar machen → jeweiliger Screen
+3. **Manueller Beleg** — "Manuell hinzufügen" in BelegeScreen ohne Datei-Upload
+4. **Manueller Umsatz** — "+" Button in UmsatzScreen für einzelne Transaktion
+
+Danach: Optimierungshinweise → Jahresübernahme → Einstellungen → iOS (erst nach Rückfrage).
+
+---
+
 ## 2026-03-26 — Phase 6: PDF-Export nach ELSTER-Feldern
 
 ### Was wurde gebaut

@@ -35,12 +35,14 @@ function getGreeting() {
 
 // ── Metric Card ──────────────────────────────────────────────────────────────
 
-function MetricCard({ title, value, subtitle, accent = false, highlight = false, delay = 0, empty = false }) {
+function MetricCard({ title, value, subtitle, accent = false, highlight = false, delay = 0, empty = false, onClick }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ ...springGentle, delay }}
+      onClick={onClick}
+      whileTap={onClick ? { scale: 0.98 } : undefined}
       style={{
         background: highlight
           ? 'linear-gradient(135deg, rgba(255,185,85,0.1) 0%, rgba(255,185,85,0.04) 100%)'
@@ -52,8 +54,11 @@ function MetricCard({ title, value, subtitle, accent = false, highlight = false,
         padding: '1.5rem',
         display: 'flex',
         flexDirection: 'column',
-        gap: '0.375rem'
+        gap: '0.375rem',
+        cursor: onClick ? 'pointer' : 'default'
       }}
+      onMouseEnter={onClick ? e => { e.currentTarget.style.filter = 'brightness(1.06)' } : undefined}
+      onMouseLeave={onClick ? e => { e.currentTarget.style.filter = '' } : undefined}
     >
       <div style={{
         fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.16em',
@@ -211,7 +216,13 @@ function DeadlineCard({ jahr, delay = 0 }) {
 
 // ── Checklist-Card ────────────────────────────────────────────────────────────
 
-function ChecklistCard({ nutzer, metrics, delay = 0 }) {
+const CHECKLIST_NAV = {
+  einnahmen:    'wizard',
+  werbungskosten: 'wizard',
+  belege:       'belege',
+}
+
+function ChecklistCard({ nutzer, metrics, delay = 0, onNavigate }) {
   const checks = [
     {
       id: 'profil',
@@ -307,16 +318,23 @@ function ChecklistCard({ nutzer, metrics, delay = 0 }) {
 
       {/* Checklist */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        {checks.map((check, i) => (
+        {checks.map((check, i) => {
+          const navTarget = !check.done ? CHECKLIST_NAV[check.id] : null
+          return (
           <motion.div
             key={check.id}
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ ...springGentle, delay: delay + 0.1 + i * 0.04 }}
+            onClick={navTarget && onNavigate ? () => onNavigate(navTarget) : undefined}
             style={{
               display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
-              padding: '0.5rem 0'
+              padding: '0.5rem 0.25rem',
+              borderRadius: 'var(--radius-md)',
+              cursor: navTarget ? 'pointer' : 'default'
             }}
+            onMouseEnter={navTarget ? e => { e.currentTarget.style.background = 'var(--color-surface-container-high)' } : undefined}
+            onMouseLeave={navTarget ? e => { e.currentTarget.style.background = '' } : undefined}
           >
             <div style={{
               width: 20, height: 20, flexShrink: 0,
@@ -359,7 +377,7 @@ function ChecklistCard({ nutzer, metrics, delay = 0 }) {
               )}
             </div>
           </motion.div>
-        ))}
+        )})}
       </div>
     </motion.div>
   )
@@ -459,7 +477,7 @@ function EstimateCard({ metrics, activeJahr, delay = 0 }) {
 
 // ── Haupt-Komponente ──────────────────────────────────────────────────────────
 
-export default function DashboardScreen({ nutzer, activeJahr }) {
+export default function DashboardScreen({ nutzer, activeJahr, onNavigate }) {
   const [metrics, setMetrics] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -579,6 +597,7 @@ export default function DashboardScreen({ nutzer, activeJahr }) {
           accent
           empty={!metrics?.einnahmen}
           delay={0.1}
+          onClick={onNavigate ? () => onNavigate('wizard') : undefined}
         />
         <MetricCard
           title="Werbungskosten"
@@ -589,6 +608,7 @@ export default function DashboardScreen({ nutzer, activeJahr }) {
           }
           empty={!metrics?.ausgaben}
           delay={0.13}
+          onClick={onNavigate ? () => onNavigate('wizard') : undefined}
         />
         <MetricCard
           title="Belege"
@@ -596,6 +616,7 @@ export default function DashboardScreen({ nutzer, activeJahr }) {
           subtitle={metrics?.belege > 0 ? 'Erfasst und gespeichert' : 'Noch keine Belege hochgeladen'}
           empty={!metrics?.belege}
           delay={0.16}
+          onClick={onNavigate ? () => onNavigate('belege') : undefined}
         />
       </div>
 
@@ -615,7 +636,7 @@ export default function DashboardScreen({ nutzer, activeJahr }) {
         gap: '1rem'
       }}>
         <DeadlineCard jahr={activeJahr} delay={0.22} />
-        <ChecklistCard nutzer={nutzerMitSteuer} metrics={metrics} delay={0.25} />
+        <ChecklistCard nutzer={nutzerMitSteuer} metrics={metrics} delay={0.25} onNavigate={onNavigate} />
       </div>
 
     </div>

@@ -27,7 +27,10 @@ export async function initDb(password) {
 
         // Verbindung testen
         instance.get('SELECT count(*) FROM sqlite_master', (err) => {
-          if (err) return reject(new Error('Falsches Passwort.'))
+          if (err) {
+            instance.close()
+            return reject(new Error('Falsches Passwort.'))
+          }
 
           db = instance
           applyPragmas(db)

@@ -428,26 +428,28 @@ function DetailPanel({ beleg, onSave, onDelete, onClose }) {
         )}
       </AnimatePresence>
 
-      {/* Vorschau */}
-      <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', flexShrink: 0 }}>
-        <BelegPreview
-          dataUrl={beleg._previewUrl}
-          dateityp={beleg.dateityp}
-          style={{ width: '100%', height: 180, borderRadius: 'var(--radius-lg)' }}
-        />
-      </div>
-
-      {/* Dateiname */}
-      <p style={{
-        fontSize: '0.6875rem',
-        color: 'var(--color-on-surface-variant)',
-        marginTop: '-0.5rem',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
-      }}>
-        {beleg.dateiname}
-      </p>
+      {/* Vorschau + Dateiname — nur wenn Datei vorhanden */}
+      {beleg.dateipfad ? (
+        <>
+          <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', flexShrink: 0 }}>
+            <BelegPreview
+              dataUrl={beleg._previewUrl}
+              dateityp={beleg.dateityp}
+              style={{ width: '100%', height: 180, borderRadius: 'var(--radius-lg)' }}
+            />
+          </div>
+          <p style={{
+            fontSize: '0.6875rem',
+            color: 'var(--color-on-surface-variant)',
+            marginTop: '-0.5rem',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {beleg.dateiname}
+          </p>
+        </>
+      ) : null}
 
       {/* Felder */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -749,7 +751,9 @@ export default function BelegeScreen({ activeJahr }) {
           FROM belege b LEFT JOIN ausgaben a ON b.ausgabe_id = a.id
           WHERE b.id = ?
         `, [belegRow.id])
-        const previewUrl = await window.steuerpilot.belege.readPreview(gespeichert.dateipfad)
+        const previewUrl = gespeichert.dateipfad
+          ? await window.steuerpilot.belege.readPreview(gespeichert.dateipfad)
+          : null
         setAusgewaehlt({ ...gespeichert, _previewUrl: previewUrl })
       }
     } catch (err) {
@@ -765,12 +769,33 @@ export default function BelegeScreen({ activeJahr }) {
           await window.steuerpilot.db.run('DELETE FROM ausgaben WHERE id = ?', [beleg.ausgabe_id])
         }
       }
-      await window.steuerpilot.belege.deleteFile(beleg.dateipfad)
+      if (beleg.dateipfad) {
+        await window.steuerpilot.belege.deleteFile(beleg.dateipfad)
+      }
       setAusgewaehlt(null)
       await loadBelege()
     } catch (err) {
       console.error('Beleg löschen fehlgeschlagen:', err)
     }
+  }
+
+  function handleManuelleEingabe() {
+    if (!jahrId) return
+    setAusgewaehlt({
+      id: null,
+      _tempId: `manuell-${Date.now()}`,
+      steuerjahr_id: jahrId,
+      dateiname: '',
+      dateipfad: '',
+      dateityp: null,
+      ocr_status: 'manuell',
+      betrag: null,
+      datum: new Date().toISOString().slice(0, 10),
+      beschreibung: '',
+      kategorie: 'sonstige',
+      _previewUrl: null,
+      _ocrData: null,
+    })
   }
 
   const gesamtBetrag = belege.reduce((s, b) => s + (Number(b.betrag) || 0), 0)
@@ -812,6 +837,33 @@ export default function BelegeScreen({ activeJahr }) {
               )}
             </p>
           </div>
+          <button
+            onClick={handleManuelleEingabe}
+            disabled={!jahrId}
+            style={{
+              background: 'var(--color-surface-container)',
+              color: 'var(--color-on-surface)',
+              border: '1px solid var(--color-outline-variant)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '0.5rem 1rem',
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              cursor: jahrId ? 'pointer' : 'not-allowed',
+              fontFamily: 'var(--font-family)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.375rem',
+              opacity: jahrId ? 1 : 0.5
+            }}
+            onMouseEnter={e => { if (jahrId) e.currentTarget.style.background = 'var(--color-surface-container-high)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--color-surface-container)' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+            Manuell hinzufügen
+          </button>
         </div>
       </div>
 

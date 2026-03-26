@@ -244,3 +244,19 @@ NIEMALS  Scan-Server ohne Token-Validierung betreiben
 - SQLCipher Binary: npm install --ignore-scripts überspringt den Download.
   Fix: node-pre-gyp install manuell mit --runtime=electron --target=<version>
 - package.json main muss auf out/main/main.js zeigen (nicht dist-electron/)
+- db:init IPC Handler: KEIN try/catch drum wickeln — LoginScreen prüft den Fehler via .catch(), nicht den Rückgabewert. Falsches Passwort muss als Exception durchkommen.
+- SQLCipher db.js: instance.close() vor reject() aufrufen wenn Passwort falsch ist (verhindert offene DB-Handles)
+- AppShell: NAV_ITEMS mit available: true/false steuern Sichtbarkeit im Sidebar
+
+## Nächste Schritte (Reihenfolge)
+
+1. **Optimierungshinweise** — KI-basierte Steuer-Tipps basierend auf den eingegebenen Daten (z.B. "Du könntest noch X€ absetzen"). Neuer Screen in der Navigation.
+2. **Jahresübernahme & Vergleich** — Vorjahresdaten übernehmen, Jahresvergleich im Dashboard
+3. **Einstellungen** (Passwort ändern, Jetson-Verbindung, Sync-Status)
+4. **iOS App** — NUR nach expliziter Rückfrage beim User
+
+### Bereits erledigt
+- ✅ PDF-Export (Phase 7)
+- ✅ Dashboard-Navigation: MetricCards + Checkliste-Einträge klickbar (Phase 8)
+- ✅ Manueller Beleg: "Manuell hinzufügen" in BelegeScreen (Phase 8)
+- ✅ Manueller Umsatz: "+" Button + Inline-Formular in UmsatzScreen (Phase 8)

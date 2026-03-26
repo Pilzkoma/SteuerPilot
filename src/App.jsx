@@ -56,7 +56,7 @@ function App() {
           {({ nutzer, activeJahr }) => (
             <>
               {activeNav === 'dashboard' && (
-                <DashboardScreen nutzer={nutzer} activeJahr={activeJahr} />
+                <DashboardScreen nutzer={nutzer} activeJahr={activeJahr} onNavigate={setActiveNav} />
               )}
               {activeNav === 'wizard' && (
                 <WizardScreen
