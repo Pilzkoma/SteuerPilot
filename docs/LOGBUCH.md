@@ -2,6 +2,40 @@
 
 ---
 
+## 2026-03-26 — Phase 6: PDF-Export nach ELSTER-Feldern
+
+### Was wurde gebaut
+
+Export-Funktion die aus allen erfassten Daten eine strukturierte Steuer-Zusammenfassung als PDF generiert.
+
+- **`src/engine/pdfExport.js`** — Pure-JS Engine (jsPDF + jspdf-autotable). Keine Electron-Abhängigkeit.
+- **`src/screens/Dashboard/ExportButton.jsx`** — Export-Button im Dashboard-Header mit Lade-, Erfolgs- und Fehlerzustand.
+- **IPC Handler `pdf:save`** — Öffnet nativen Speichern-Dialog, schreibt die PDF-Bytes auf Disk.
+
+**PDF-Struktur (5–6 Seiten je nach Daten):**
+1. **Deckblatt** — Nutzername, Jahr, Erstelldatum, prominenter Disclaimer-Kasten (orange Umrandung)
+2. **Übersicht** — Alle Kennzahlen auf einen Blick, ggf. geschätzte Rückerstattung
+3. **Anlage N** — Bruttoarbeitslohn, Lohnsteuer, Soli, Kirchensteuer, Werbungskosten mit ELSTER-Zeilennummern
+4. **Werbungskosten** — Aufschlüsselung nach Kategorie mit ELSTER-Feld + Erläuterung, Pauschbetrag-Vergleich
+5. **Vorsorge & Sonderausgaben** — Krankenversicherung, Altersvorsorge, Spenden
+6. **Anlage EÜR** _(nur wenn Honorar-Einnahmen vorhanden)_ — Einnahmen-Überschuss-Rechnung für Freiberufler
+
+### Entscheidungen
+
+- **Disclaimer auf dem Deckblatt** — Großer, orange hinterlegter Hinweiskasten der klar macht dass das Dokument kein amtliches Formular ist. Auf jeder Seite zusätzlich kleiner Footer-Hinweis.
+- **jsPDF im Renderer** — Kein Node-Prozess nötig, jsPDF läuft komplett im Renderer. Nur der Speichern-Dialog und das Schreiben der Datei gehen durch den Main Process (IPC).
+- **Fehlende Daten = "—"** — Wenn Lohnsteuer oder Soli nicht im Wizard erfasst wurden, erscheint "—" mit Hinweis dass die Werte von der Lohnsteuerbescheinigung übernommen werden müssen.
+- **EÜR nur bei Honoraren** — Seite 6 wird automatisch hinzugefügt wenn Honorar-Einnahmen erfasst wurden, sonst 5 Seiten.
+- **Rückerstattungs-Schätzung** — Nutzt die bestehende `schaetzeRueckerstattung()`-Engine. Nur angezeigt wenn Lohneinnahmen vorhanden.
+
+### Offene Punkte / Nächste Schritte
+
+- Wizard-Felder (Lohnsteuer, Soli, Kirchensteuer) noch nicht mit Anlage-N-Export verbunden — User muss Werte von Lohnsteuerbescheinigung manuell übernehmen
+- iOS-App: PDF-Export über Share Sheet noch ausstehend (eigene Phase)
+- Direktübertragung an ELSTER: Phase 3 / nach Zertifizierung
+
+---
+
 ## 2026-03-26 — Phase 5 Teil 2: OCR mit Tesseract.js
 
 ### Was wurde gebaut
