@@ -83,7 +83,7 @@ const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: <IconDashboard />, available: true },
   { id: 'wizard', label: 'Dateneingabe', icon: <IconWizard />, available: true },
   { id: 'belege', label: 'Belege', icon: <IconBelege />, available: true },
-  { id: 'umsatz', label: 'Umsatz', icon: <IconUmsatz />, available: false },
+  { id: 'umsatz', label: 'Umsatz', icon: <IconUmsatz />, available: true },
   { id: 'pdf', label: 'PDF Export', icon: <IconPdf />, available: false },
 ]
 

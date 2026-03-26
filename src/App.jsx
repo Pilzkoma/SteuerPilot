@@ -6,6 +6,7 @@ import AppShell from './components/AppShell/AppShell.jsx'
 import DashboardScreen from './screens/Dashboard/DashboardScreen.jsx'
 import WizardScreen from './screens/Wizard/WizardScreen.jsx'
 import BelegeScreen from './screens/Belege/BelegeScreen.jsx'
+import UmsatzScreen from './screens/Umsatz/UmsatzScreen.jsx'
 
 // Screens: 'login' | 'onboarding' | 'app'
 
@@ -66,6 +67,9 @@ function App() {
               )}
               {activeNav === 'belege' && (
                 <BelegeScreen activeJahr={activeJahr} />
+              )}
+              {activeNav === 'umsatz' && (
+                <UmsatzScreen activeJahr={activeJahr} />
               )}
             </>
           )}
