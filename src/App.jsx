@@ -7,6 +7,7 @@ import DashboardScreen from './screens/Dashboard/DashboardScreen.jsx'
 import WizardScreen from './screens/Wizard/WizardScreen.jsx'
 import BelegeScreen from './screens/Belege/BelegeScreen.jsx'
 import UmsatzScreen from './screens/Umsatz/UmsatzScreen.jsx'
+import OptimierungScreen from './screens/Optimierung/OptimierungScreen.jsx'
 
 // Screens: 'login' | 'onboarding' | 'app'
 
@@ -70,6 +71,13 @@ function App() {
               )}
               {activeNav === 'umsatz' && (
                 <UmsatzScreen activeJahr={activeJahr} />
+              )}
+              {activeNav === 'optimierung' && (
+                <OptimierungScreen
+                  activeJahr={activeJahr}
+                  nutzer={nutzer}
+                  onNavigate={setActiveNav}
+                />
               )}
             </>
           )}

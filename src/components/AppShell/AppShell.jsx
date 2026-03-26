@@ -46,6 +46,15 @@ function IconUmsatz() {
   )
 }
 
+function IconOptimierung() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path d="M9 21h6M12 3a6 6 0 0 1 6 6c0 2.2-1.2 4.1-3 5.2V17a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1v-2.8C7.2 13.1 6 11.2 6 9a6 6 0 0 1 6-6z"
+        stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 function IconPdf() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -84,6 +93,7 @@ const NAV_ITEMS = [
   { id: 'wizard', label: 'Dateneingabe', icon: <IconWizard />, available: true },
   { id: 'belege', label: 'Belege', icon: <IconBelege />, available: true },
   { id: 'umsatz', label: 'Umsatz', icon: <IconUmsatz />, available: true },
+  { id: 'optimierung',  label: 'Optimierungshinweise',  icon: <IconOptimierung />,  available: true },
   { id: 'pdf', label: 'PDF Export', icon: <IconPdf />, available: false },
 ]
 
