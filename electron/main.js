@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
-import { existsSync } from 'fs'
+import { join, extname } from 'path'
+import { existsSync, mkdirSync, writeFileSync, readFileSync, unlinkSync } from 'fs'
+import { randomUUID } from 'crypto'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { initDb, closeDb, dbGet, dbAll, dbRun } from './db.js'
 
@@ -59,6 +60,34 @@ ipcMain.handle('db:all', async (_event, sql, params) => {
 
 ipcMain.handle('db:run', async (_event, sql, params) => {
   return await dbRun(sql, params)
+})
+
+// ── IPC: Belegverwaltung ──────────────────────────────────────────────────────
+
+ipcMain.handle('belege:import-file', (_event, name, buffer, typ) => {
+  const belegeDir = join(app.getPath('userData'), 'belege')
+  if (!existsSync(belegeDir)) mkdirSync(belegeDir, { recursive: true })
+
+  const ext = extname(name).toLowerCase() || '.bin'
+  const dateiname = `${randomUUID()}${ext}`
+  const dateipfad = join(belegeDir, dateiname)
+
+  writeFileSync(dateipfad, Buffer.from(buffer))
+  return { dateiname, dateipfad }
+})
+
+ipcMain.handle('belege:read-preview', (_event, dateipfad) => {
+  if (!existsSync(dateipfad)) return null
+  const data = readFileSync(dateipfad)
+  const ext = extname(dateipfad).toLowerCase()
+  const mimeMap = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.pdf': 'application/pdf', '.gif': 'image/gif', '.webp': 'image/webp' }
+  const mime = mimeMap[ext] ?? 'application/octet-stream'
+  return `data:${mime};base64,${data.toString('base64')}`
+})
+
+ipcMain.handle('belege:delete-file', (_event, dateipfad) => {
+  if (existsSync(dateipfad)) unlinkSync(dateipfad)
+  return { success: true }
 })
 
 // ── App Lifecycle ─────────────────────────────────────────────────────────────

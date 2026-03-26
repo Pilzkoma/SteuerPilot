@@ -2,7 +2,7 @@
   "name": "steuerpilot",
   "version": "0.1.0",
   "description": "Ganzjähriger Steuer- und Finanzassistent für Deutschland",
-  "main": "dist-electron/main.js",
+  "main": "out/main/main.js",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
@@ -41,8 +41,7 @@
       "output": "release"
     },
     "files": [
-      "dist/**/*",
-      "dist-electron/**/*"
+      "out/**/*"
     ],
     "win": {
       "target": "nsis"

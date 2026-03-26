@@ -5,6 +5,7 @@ import OnboardingScreen from './screens/Onboarding/OnboardingScreen.jsx'
 import AppShell from './components/AppShell/AppShell.jsx'
 import DashboardScreen from './screens/Dashboard/DashboardScreen.jsx'
 import WizardScreen from './screens/Wizard/WizardScreen.jsx'
+import BelegeScreen from './screens/Belege/BelegeScreen.jsx'
 
 // Screens: 'login' | 'onboarding' | 'app'
 
@@ -62,6 +63,9 @@ function App() {
                   activeJahr={activeJahr}
                   onNavigateDashboard={() => setActiveNav('dashboard')}
                 />
+              )}
+              {activeNav === 'belege' && (
+                <BelegeScreen activeJahr={activeJahr} />
               )}
             </>
           )}

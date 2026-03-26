@@ -228,6 +228,66 @@ Vollständiger 6-Schritt-Wizard für die Steuerdateneingabe:
 
 ### Offene Punkte / Nächste Schritte
 
-- **Phase 5:** Belegverwaltung (Beleg fotografieren/importieren, OCR, Jetson-Analyse)
+- **Phase 5 Teil 1:** Belegverwaltung Basis (Drag & Drop, Vorschau, manuelle Kategorie) → nächste Session
+- **Phase 5 Teil 2:** OCR + Jetson-Analyse
 - **Phase 6:** PDF-Export (strukturiert nach ELSTER-Feldern mit Feldhinweisen)
 - Dashboard-Metriken werden jetzt mit echten Wizard-Daten gefüllt (Einnahmen, Werbungskosten)
+
+---
+
+## 2026-03-26 — Phase 5 Teil 1: Belegverwaltung (Import + Vorschau + Kategorie)
+
+### Was wurde gebaut
+
+- **`electron/main.js`** — 3 neue IPC-Handler:
+  - `belege:import-file` — empfängt ArrayBuffer vom Renderer, speichert mit UUID-Dateinamen unter `<userData>/belege/`, gibt Dateiname + Pfad zurück
+  - `belege:read-preview` — liest Datei als Base64-Data-URL (für `<img src=...>`)
+  - `belege:delete-file` — löscht Datei von Disk
+
+- **`electron/preload/index.js`** — neues `window.steuerpilot.belege`-Objekt: `importFile`, `readPreview`, `deleteFile`
+
+- **`src/screens/Belege/UploadZone.jsx`** — Drag & Drop Komponente:
+  - Drag-over-Animation (Border wird Amber, leichte Skalierung)
+  - Klick öffnet nativen Dateidialog (multi-select)
+  - Validierung: nur JPG, PNG, WebP, PDF — Fehlermeldung bei ungültigem Typ
+  - Format-Badges (JPG / PNG / PDF) als visuelle Hinweise
+
+- **`src/screens/Belege/BelegeScreen.jsx`** — Haupt-Screen:
+  - Zwei-Spalten-Layout: links Upload + Beleg-Liste, rechts Detail-Panel (erscheint nur wenn Beleg gewählt)
+  - **BelegKarte** — Listeneinträge mit Thumbnail, Kategorie-Badge (farbkodiert), Betrag, Datum
+  - **BelegPreview** — Bild-Tag für Fotos, PDF-Platzhalter mit Icon für PDFs
+  - **DetailPanel** — Formular: Kategorie-Dropdown (alle 8 ausgaben-Kategorien), Betrag, Datum, Beschreibung; Speichern- + Löschen-Button mit Bestätigungsschritt
+  - Neu: Datei importieren → sofort in Detail-Panel; Speichern → INSERT ausgaben + INSERT belege → Liste aktualisiert
+  - Update: bestehenden Beleg anklicken → Formular befüllt → Änderungen speichern → UPDATE ausgaben
+  - Löschen: DELETE belege + DELETE ausgaben + Datei von Disk entfernen
+  - Header zeigt Anzahl Belege und Gesamtbetrag für das aktive Steuerjahr
+
+- **`src/components/AppShell/AppShell.jsx`** — "Belege" Nav-Item auf `available: true`
+- **`src/App.jsx`** — BelegeScreen-Route eingehängt
+
+### Entscheidungen
+
+- **Base64-Vorschau statt file://-URL** — Renderer hat keinen direkten Dateisystemzugriff; Base64 über IPC ist sicher und funktioniert auch nach Verschieben des userData-Verzeichnisses
+- **UUID als Dateiname** — vermeidet Kollisionen und Sonderzeichen aus Originaldateinamen
+- **OCR-Status `'manuell'`** für alle manuell angelegten Belege — Platzhalter für Teil 2
+- **Kein separater "Belege"-Screen** für gespeicherte Ausgaben aus dem Wizard — die `belege`-Tabelle ist jetzt der zentrale Ort für alle Belegdateien; Wizard-Ausgaben ohne Datei erscheinen hier nicht (korrektes Verhalten)
+
+### Technische Erkenntnisse
+
+- `electron-rebuild` meldete „Success" ohne `.node`-Datei zu erzeugen — tatsächlich war `node-pre-gyp install` mit Electron-Target nötig: `node-pre-gyp install --runtime=electron --target=31.7.7 --dist-url=https://electronjs.org/headers`
+- `package.json "main"` zeigte auf `dist-electron/main.js` statt `out/main/main.js` — muss zum electron-vite outDir passen
+
+### Status
+
+✅ Drag & Drop + Klick-Upload funktioniert (JPG, PNG, PDF)
+✅ Datei-Vorschau (Bild oder PDF-Icon) im Detail-Panel und in der Liste
+✅ Manuelle Kategorie, Betrag, Datum, Beschreibung zuweisbar
+✅ Speichern in ausgaben + belege Tabellen
+✅ Löschen mit Datei-Entfernung von Disk
+✅ Build sauber (707 kB JS, 3 Bundles, keine Fehler)
+✅ Phase 5 Teil 1 abgeschlossen
+
+### Offene Punkte / Nächste Schritte
+
+- **Phase 5 Teil 2:** OCR-Erkennung (Betrag, Datum, Händler automatisch auslesen) + Jetson-Analyse
+- **Phase 6:** PDF-Export nach ELSTER-Feldern
