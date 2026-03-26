@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { springGentle } from '../../theme/tokens.js'
 import { berechneOptimierungshinweise } from '../../engine/optimierung.js'
 
@@ -30,7 +30,7 @@ function IconCheck() {
 // ── Priorität Badge ───────────────────────────────────────────────────────────
 
 const PRIORITAET_STYLE = {
-  hoch:    { bg: 'rgba(255,138,128,0.12)', color: '#FF8A80', label: 'Hoch' },
+  hoch:    { bg: 'rgba(255,138,128,0.12)', color: 'var(--color-error)', label: 'Hoch' },
   mittel:  { bg: 'rgba(255,185,85,0.12)',  color: 'var(--color-secondary)', label: 'Mittel' },
   niedrig: { bg: 'rgba(168,199,160,0.12)', color: 'var(--color-tertiary)', label: 'Niedrig' },
 }
@@ -141,42 +141,43 @@ export default function OptimierungScreen({ activeJahr, nutzer, onNavigate }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (activeJahr?.id) loadHinweise()
-  }, [activeJahr?.id])
+    if (!activeJahr?.id) return
+    let cancelled = false
 
-  async function loadHinweise() {
-    setLoading(true)
-    const db = window.steuerpilot.db
-    const jahrId = activeJahr.id
-
-    try {
-      const fortschritt = await db.get(
-        "SELECT wert FROM wizard_fortschritt WHERE steuerjahr_id = ? AND schritt = 'draft'",
-        [jahrId]
-      )
-
-      let daten = null
-      if (fortschritt?.wert) {
-        try { daten = JSON.parse(fortschritt.wert) } catch {}
+    async function load() {
+      setLoading(true)
+      const db = window.steuerpilot.db
+      const jahrId = activeJahr.id
+      try {
+        const fortschritt = await db.get(
+          "SELECT wert FROM wizard_fortschritt WHERE steuerjahr_id = ? AND schritt = 'draft'",
+          [jahrId]
+        )
+        let daten = null
+        if (fortschritt?.wert) {
+          try { daten = JSON.parse(fortschritt.wert) } catch {}
+        }
+        if (cancelled) return
+        if (!daten) {
+          setHinweise([])
+          setLoading(false)
+          return
+        }
+        const nutzertyp = nutzer?.nutzertyp ?? 'angestellter'
+        const jahr = activeJahr?.jahr ?? 2025
+        const berechnet = berechneOptimierungshinweise(daten, nutzertyp, jahr)
+        setHinweise(berechnet)
+      } catch (err) {
+        console.error('OptimierungScreen loadHinweise:', err)
+        if (!cancelled) setHinweise([])
+      } finally {
+        if (!cancelled) setLoading(false)
       }
-
-      if (!daten) {
-        setHinweise([])
-        setLoading(false)
-        return
-      }
-
-      const nutzertyp = nutzer?.nutzertyp ?? 'angestellter'
-      const jahr = activeJahr?.jahr ?? 2025
-      const berechnet = berechneOptimierungshinweise(daten, nutzertyp, jahr)
-      setHinweise(berechnet)
-    } catch (err) {
-      console.error('OptimierungScreen loadHinweise:', err)
-      setHinweise([])
-    } finally {
-      setLoading(false)
     }
-  }
+
+    load()
+    return () => { cancelled = true }
+  }, [activeJahr?.id, nutzer?.nutzertyp])
 
   return (
     <div style={{
