@@ -4,6 +4,33 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync, unlinkSync } from '
 import { randomUUID } from 'crypto'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { initDb, closeDb, dbGet, dbAll, dbRun } from './db.js'
+import Tesseract from 'tesseract.js'
+import pdfParse from 'pdf-parse'
+import { extrahiereAlles } from '../src/engine/ocrExtraction.js'
+
+// ── OCR: Singleton Worker (lazy init, reused across calls) ────────────────────
+
+let _ocrWorker = null
+let _ocrWorkerPromise = null  // Prevents duplicate initialization
+
+async function getOcrWorker() {
+  if (_ocrWorker) return _ocrWorker
+  if (_ocrWorkerPromise) return _ocrWorkerPromise
+
+  _ocrWorkerPromise = Tesseract.createWorker('deu', 1, {
+    cachePath: join(app.getPath('userData'), 'tessdata'),
+    logger: () => {}
+  }).then(w => {
+    _ocrWorker = w
+    _ocrWorkerPromise = null
+    return w
+  }).catch(err => {
+    _ocrWorkerPromise = null
+    throw err
+  })
+
+  return _ocrWorkerPromise
+}
 
 let mainWindow = null
 
@@ -90,6 +117,30 @@ ipcMain.handle('belege:delete-file', (_event, dateipfad) => {
   return { success: true }
 })
 
+ipcMain.handle('belege:ocr', async (_event, dateipfad, dateityp) => {
+  if (!existsSync(dateipfad)) return { fehler: 'Datei nicht gefunden.' }
+
+  try {
+    let roherText = ''
+
+    if (dateityp === 'application/pdf') {
+      const buffer = readFileSync(dateipfad)
+      const result = await pdfParse(buffer)
+      roherText = result.text ?? ''
+      if (!roherText.trim()) return { fehler: 'PDF enthält keinen extrahierbaren Text (gescanntes PDF?).' }
+    } else {
+      const worker = await getOcrWorker()
+      const { data } = await worker.recognize(dateipfad)
+      roherText = data.text ?? ''
+    }
+
+    const { betrag, datum, haendler } = extrahiereAlles(roherText)
+    return { betrag, datum, haendler, roherText }
+  } catch (err) {
+    return { fehler: err.message }
+  }
+})
+
 // ── App Lifecycle ─────────────────────────────────────────────────────────────
 
 app.whenReady().then(() => {
@@ -107,6 +158,7 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
+  if (_ocrWorker) _ocrWorker.terminate().catch(() => {})
   closeDb()
   if (process.platform !== 'darwin') app.quit()
 })

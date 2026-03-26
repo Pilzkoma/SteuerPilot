@@ -19,6 +19,7 @@ contextBridge.exposeInMainWorld('steuerpilot', {
   belege: {
     importFile: (name, buffer, typ) => ipcRenderer.invoke('belege:import-file', name, buffer, typ),
     readPreview: (dateipfad) => ipcRenderer.invoke('belege:read-preview', dateipfad),
-    deleteFile: (dateipfad) => ipcRenderer.invoke('belege:delete-file', dateipfad)
+    deleteFile: (dateipfad) => ipcRenderer.invoke('belege:delete-file', dateipfad),
+    ocr: (dateipfad, dateityp) => ipcRenderer.invoke('belege:ocr', dateipfad, dateityp)
   }
 })

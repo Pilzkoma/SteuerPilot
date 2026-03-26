@@ -2,6 +2,41 @@
 
 ---
 
+## 2026-03-26 — Phase 5 Teil 2: OCR mit Tesseract.js
+
+### Was wurde gebaut
+
+Lokale OCR-Integration für die Belegverwaltung — kein Netzwerk, kein Jetson.
+
+- **`src/engine/ocrExtraction.js`** — Pure-JS Extraktions-Engine: Betrag, Datum, Händler aus OCR-Text via Regex. Vollständig unit-testbar, keine Electron-Abhängigkeit.
+- **OCR IPC Handler** in `electron/main.js` — Nimmt Dateipfad + MIME-Typ entgegen, führt Tesseract (Bilder) oder pdf-parse (digitale PDFs) aus, gibt `{ betrag, datum, haendler, roherText }` zurück.
+- **Singleton Worker** — Tesseract-Worker wird beim ersten OCR-Aufruf initialisiert und für die gesamte App-Laufzeit gehalten. WASM lädt einmal, danach schnell.
+- **Sprachcache** — `deu.traineddata` (~5 MB) wird beim ersten Run von CDN geladen und in `userData/tessdata/` gespeichert. Folgeaufrufe sind offline.
+- **BelegeScreen-Integration** — Nach dem Upload startet OCR sofort im Hintergrund. Detail Panel zeigt animierten Badge (ausstehend → erkannt / manuell). Felder werden vorausgefüllt wenn OCR Daten liefert. User kann jederzeit überschreiben.
+- **OCR Info Box** — Zeigt erkannte Werte mit grünem Hinweis an, solange der Beleg noch nicht gespeichert ist.
+
+### Entscheidungen
+
+- **Tesseract.js v7** — WASM-basiert, kein nativer Binary, kein electron-rebuild nötig. Deutlich einfacher als v3/v4.
+- **Singleton Worker statt Per-Call** — Worker-Init + WASM-Load kostet ~2-3s. Singleton hält das Worker-Thread am Leben, recognize-Aufrufe sind danach schnell (~0.5-2s je nach Bildgröße).
+- **pdf-parse für PDFs** — Nur digitale PDFs (mit eingebettetem Text). Gescannte PDFs (Bild-im-PDF) werden mit Hinweismeldung abgelehnt — Tesseract-auf-PDF-Render kommt erst mit dem Jetson-Backend.
+- **`ocr_status`** — 4 Werte: `'ausstehend'` (läuft), `'auto'` (OCR erfolgreich), `'fehlgeschlagen'` (kein Text gefunden), `'manuell'` (kein OCR).
+- **Betrag-Extraktion** — Zweistufig: zuerst Keyword-Match (Gesamt/Total/Summe), dann Fallback auf größten Wert im Text.
+
+### Technische Erkenntnisse
+
+- `externalizeDepsPlugin` in electron-vite: npm-Pakete bleiben als `require()` im Output (extern), lokale Dateien (ocrExtraction.js) werden inline gebündelt — das war die saubere Lösung.
+- `pdf-parse` hat einen bekannten Quirk: liest beim Import einmalig eine Test-PDF aus dem eigenen Paket — harmlos, nur beim ersten `require()` leicht langsamer.
+- Tesseract Worker-Pfad (workerPath) zeigt auf absoluten Pfad innerhalb des Pakets via `__dirname` — kein manuelles Konfigurieren nötig, auch in Electron.
+
+### Offene Punkte / Nächste Schritte
+
+- **Teil 3** — Jetson-Integration: LLaVA für gescannte PDFs und schwierige Bilder als Fallback
+- Kategorie-Vorschlag aus OCR-Text (Händler-Name → Kategorie-Mapping)
+- Konfidenz-Schwellwert für Betrag (sehr kleine oder unrealistische Beträge ignorieren)
+
+---
+
 ## 2026-03-25 — Phase 0: Fundament
 
 ### Was wurde gebaut

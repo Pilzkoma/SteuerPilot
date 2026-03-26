@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { spring, springGentle } from '../../theme/tokens.js'
 import UploadZone from './UploadZone.jsx'
@@ -83,6 +83,58 @@ function IconEmpty() {
       <line x1="8" y1="13" x2="16" y2="13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
       <line x1="8" y1="17" x2="12" y2="17" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
+  )
+}
+
+function IconScan() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+      <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"
+        stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+// ── OCR-Status Badge ───────────────────────────────────────────────────────────
+
+const OCR_BADGE = {
+  ausstehend: { label: 'OCR analysiert…', color: 'var(--color-secondary)', spin: true },
+  auto:        { label: 'OCR erkannt',    color: '#34c77b',                 spin: false },
+  fehlgeschlagen: { label: 'Kein OCR',   color: 'var(--color-on-surface-variant)', spin: false },
+  manuell:     { label: 'Manuell',        color: 'var(--color-on-surface-variant)', spin: false },
+}
+
+function OcrBadge({ status }) {
+  const cfg = OCR_BADGE[status] ?? OCR_BADGE.manuell
+  return (
+    <div style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.3rem',
+      fontSize: '0.625rem',
+      fontWeight: 700,
+      letterSpacing: '0.1em',
+      textTransform: 'uppercase',
+      color: cfg.color,
+      background: `${cfg.color}18`,
+      border: `1px solid ${cfg.color}30`,
+      padding: '0.2rem 0.5rem',
+      borderRadius: 'var(--radius-pill)',
+    }}>
+      {cfg.spin ? (
+        <motion.span
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+          style={{ display: 'flex' }}
+        >
+          <IconScan />
+        </motion.span>
+      ) : (
+        <IconScan />
+      )}
+      {cfg.label}
+    </div>
   )
 }
 
@@ -238,6 +290,20 @@ function DetailPanel({ beleg, onSave, onDelete, onClose }) {
   const [deleting, setDeleting] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
+  // Auto-fill from OCR when data arrives (only for new, unsaved belege)
+  const ocrApplied = useRef(false)
+  useEffect(() => {
+    if (!beleg._ocrData || beleg.id || ocrApplied.current) return
+    ocrApplied.current = true
+    const { betrag, datum, haendler } = beleg._ocrData
+    setForm(f => ({
+      ...f,
+      betrag: f.betrag || (betrag != null ? String(betrag) : ''),
+      datum: f.datum || datum || '',
+      beschreibung: f.beschreibung || haendler || '',
+    }))
+  }, [beleg._ocrData, beleg.id])
+
   function update(field, value) {
     setForm(f => ({ ...f, [field]: value }))
   }
@@ -296,14 +362,17 @@ function DetailPanel({ beleg, onSave, onDelete, onClose }) {
     >
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h3 style={{
-          fontSize: '0.875rem',
-          fontWeight: 700,
-          color: 'var(--color-on-surface)',
-          letterSpacing: '-0.01em'
-        }}>
-          {beleg.id ? 'Beleg bearbeiten' : 'Neuer Beleg'}
-        </h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+          <h3 style={{
+            fontSize: '0.875rem',
+            fontWeight: 700,
+            color: 'var(--color-on-surface)',
+            letterSpacing: '-0.01em'
+          }}>
+            {beleg.id ? 'Beleg bearbeiten' : 'Neuer Beleg'}
+          </h3>
+          <OcrBadge status={beleg.ocr_status ?? 'manuell'} />
+        </div>
         <button
           onClick={onClose}
           style={{
@@ -317,6 +386,47 @@ function DetailPanel({ beleg, onSave, onDelete, onClose }) {
           <IconClose />
         </button>
       </div>
+
+      {/* OCR Info Box */}
+      <AnimatePresence>
+        {beleg._ocrData && !beleg.id && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={springGentle}
+            style={{
+              background: 'rgba(52,199,123,0.08)',
+              border: '1px solid rgba(52,199,123,0.25)',
+              borderRadius: 'var(--radius-md)',
+              padding: '0.625rem 0.75rem',
+              fontSize: '0.6875rem',
+              color: 'var(--color-on-surface-variant)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.25rem'
+            }}
+          >
+            <span style={{ fontWeight: 700, color: '#34c77b', letterSpacing: '0.05em', textTransform: 'uppercase', fontSize: '0.5625rem' }}>
+              OCR hat erkannt
+            </span>
+            {beleg._ocrData.haendler && (
+              <span>Händler: <strong style={{ color: 'var(--color-on-surface)' }}>{beleg._ocrData.haendler}</strong></span>
+            )}
+            {beleg._ocrData.betrag != null && (
+              <span>Betrag: <strong style={{ color: 'var(--color-on-surface)' }}>
+                {Number(beleg._ocrData.betrag).toLocaleString('de-DE', { minimumFractionDigits: 2 })} €
+              </strong></span>
+            )}
+            {beleg._ocrData.datum && (
+              <span>Datum: <strong style={{ color: 'var(--color-on-surface)' }}>
+                {new Date(beleg._ocrData.datum).toLocaleDateString('de-DE')}
+              </strong></span>
+            )}
+            <span style={{ opacity: 0.6, marginTop: '0.125rem' }}>Felder wurden vorausgefüllt — du kannst sie jederzeit ändern.</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Vorschau */}
       <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', flexShrink: 0 }}>
@@ -549,23 +659,37 @@ export default function BelegeScreen({ activeJahr }) {
         )
         const previewUrl = await window.steuerpilot.belege.readPreview(dateipfad)
 
+        const tempId = `temp-${Date.now()}-${Math.random()}`
         const neuerBeleg = {
           id: null,
-          _tempId: `temp-${Date.now()}-${Math.random()}`,
+          _tempId: tempId,
           steuerjahr_id: jahrId,
           dateiname,
           dateipfad,
           dateityp: file.type || null,
-          ocr_status: 'manuell',
+          ocr_status: 'ausstehend',
           betrag: null,
           datum: '',
           beschreibung: '',
           kategorie: 'sonstige',
-          _previewUrl: previewUrl
+          _previewUrl: previewUrl,
+          _ocrData: null,
         }
 
-        // Nur einen auswählen — den letzten hochgeladenen
         setAusgewaehlt(neuerBeleg)
+
+        // OCR im Hintergrund starten
+        window.steuerpilot.belege.ocr(dateipfad, file.type || null).then(result => {
+          setAusgewaehlt(prev => {
+            if (!prev || prev._tempId !== tempId) return prev // user navigated away
+            if (result.fehler) {
+              return { ...prev, ocr_status: 'fehlgeschlagen' }
+            }
+            return { ...prev, ocr_status: 'auto', _ocrData: result }
+          })
+        }).catch(() => {
+          setAusgewaehlt(prev => prev?._tempId === tempId ? { ...prev, ocr_status: 'fehlgeschlagen' } : prev)
+        })
       }
     } catch (err) {
       console.error('Datei-Import fehlgeschlagen:', err)
@@ -610,10 +734,11 @@ export default function BelegeScreen({ activeJahr }) {
         const ausgabeRow = await db.get('SELECT last_insert_rowid() as id', [])
         const ausgabeId = ausgabeRow.id
 
+        const ocrStatus = beleg.ocr_status === 'auto' ? 'auto' : 'manuell'
         await db.run(
           `INSERT INTO belege (steuerjahr_id, ausgabe_id, dateiname, dateipfad, dateityp, ocr_status)
-           VALUES (?, ?, ?, ?, ?, 'manuell')`,
-          [jahrId, ausgabeId, beleg.dateiname, beleg.dateipfad, beleg.dateityp]
+           VALUES (?, ?, ?, ?, ?, ?)`,
+          [jahrId, ausgabeId, beleg.dateiname, beleg.dateipfad, beleg.dateityp, ocrStatus]
         )
         const belegRow = await db.get('SELECT last_insert_rowid() as id', [])
 

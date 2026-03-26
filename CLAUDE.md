@@ -241,3 +241,6 @@ NIEMALS  Scan-Server ohne Token-Validierung betreiben
 - schaetzeRueckerstattung() gibt geschaetzteRueckerstattung zurück (nicht rueckerstattung)
 - DashboardScreen: Math.abs() für Anzeige — Engine gibt positiv/negativ zurück
 - Kategorie-Konstanten gesetzt: einnahmen ('lohn'|'honorar'|'sonstige'), ausgaben ('fahrtkosten'|'homeoffice'|'arbeitsmittel'|'krankenversicherung'|'altersvorsorge'|'spende'|'sonstige')
+- SQLCipher Binary: npm install --ignore-scripts überspringt den Download.
+  Fix: node-pre-gyp install manuell mit --runtime=electron --target=<version>
+- package.json main muss auf out/main/main.js zeigen (nicht dist-electron/)
