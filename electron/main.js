@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join, extname } from 'path'
 import { existsSync, mkdirSync, writeFileSync, readFileSync, unlinkSync } from 'fs'
 import { randomUUID } from 'crypto'
@@ -139,6 +139,21 @@ ipcMain.handle('belege:ocr', async (_event, dateipfad, dateityp) => {
   } catch (err) {
     return { fehler: err.message }
   }
+})
+
+// ── PDF Export ────────────────────────────────────────────────────────────────
+
+ipcMain.handle('pdf:save', async (_event, buffer, defaultFilename) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    defaultPath: defaultFilename,
+    filters: [{ name: 'PDF-Dokument', extensions: ['pdf'] }],
+    properties: ['createDirectory']
+  })
+
+  if (canceled || !filePath) return false
+
+  writeFileSync(filePath, Buffer.from(buffer))
+  return true
 })
 
 // ── App Lifecycle ─────────────────────────────────────────────────────────────

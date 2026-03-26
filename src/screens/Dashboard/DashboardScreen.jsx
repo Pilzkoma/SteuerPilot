@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { springGentle } from '../../theme/tokens.js'
 import { schaetzeRueckerstattung } from '../../engine/steuerberechnung.js'
+import ExportButton from './ExportButton.jsx'
 
 // ── Hilfsfunktionen ──────────────────────────────────────────────────────────
 
@@ -521,35 +522,47 @@ export default function DashboardScreen({ nutzer, activeJahr }) {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ ...springGentle, delay: 0.05 }}
-        style={{ marginBottom: '2.5rem' }}
+        style={{
+          marginBottom: '2.5rem',
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          gap: '1rem'
+        }}
       >
-        <div style={{
-          fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.14em',
-          textTransform: 'uppercase', color: 'var(--color-secondary)',
-          marginBottom: '0.375rem'
-        }}>
-          {getGreeting()}
+        <div>
+          <div style={{
+            fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: 'var(--color-secondary)',
+            marginBottom: '0.375rem'
+          }}>
+            {getGreeting()}
+          </div>
+          <h1 style={{
+            fontSize: '2rem', fontWeight: 800,
+            letterSpacing: '-0.025em',
+            color: 'var(--color-on-surface)',
+            lineHeight: 1.15, marginBottom: '0.375rem'
+          }}>
+            {nutzer?.vorname
+              ? `${nutzer.vorname}, hier ist deine Übersicht`
+              : 'Deine Übersicht'}
+          </h1>
+          <p style={{
+            color: 'var(--color-on-surface-variant)',
+            fontSize: '0.875rem'
+          }}>
+            Steuerjahr {activeJahr?.jahr ?? '—'} · {
+              metrics?.einnahmen > 0 || metrics?.ausgaben > 0
+                ? 'Daten werden laufend aktualisiert'
+                : 'Noch keine Daten erfasst — starte mit der Dateneingabe'
+            }
+          </p>
         </div>
-        <h1 style={{
-          fontSize: '2rem', fontWeight: 800,
-          letterSpacing: '-0.025em',
-          color: 'var(--color-on-surface)',
-          lineHeight: 1.15, marginBottom: '0.375rem'
-        }}>
-          {nutzer?.vorname
-            ? `${nutzer.vorname}, hier ist deine Übersicht`
-            : 'Deine Übersicht'}
-        </h1>
-        <p style={{
-          color: 'var(--color-on-surface-variant)',
-          fontSize: '0.875rem'
-        }}>
-          Steuerjahr {activeJahr?.jahr ?? '—'} · {
-            metrics?.einnahmen > 0 || metrics?.ausgaben > 0
-              ? 'Daten werden laufend aktualisiert'
-              : 'Noch keine Daten erfasst — starte mit der Dateneingabe'
-          }
-        </p>
+
+        <div style={{ flexShrink: 0, paddingTop: '1.5rem' }}>
+          <ExportButton nutzer={nutzerMitSteuer} activeJahr={activeJahr} />
+        </div>
       </motion.div>
 
       {/* Metriken — 3 Spalten */}

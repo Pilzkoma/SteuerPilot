@@ -21,5 +21,10 @@ contextBridge.exposeInMainWorld('steuerpilot', {
     readPreview: (dateipfad) => ipcRenderer.invoke('belege:read-preview', dateipfad),
     deleteFile: (dateipfad) => ipcRenderer.invoke('belege:delete-file', dateipfad),
     ocr: (dateipfad, dateityp) => ipcRenderer.invoke('belege:ocr', dateipfad, dateityp)
+  },
+
+  // ── PDF Export ─────────────────────────────────────────────────────────────
+  pdf: {
+    save: (buffer, filename) => ipcRenderer.invoke('pdf:save', buffer, filename)
   }
 })
