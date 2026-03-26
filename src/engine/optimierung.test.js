@@ -103,4 +103,18 @@ describe('berechneOptimierungshinweise', () => {
       )
     }
   })
+
+  it('meldet werbungskosten_pauschbetrag NICHT für Freelancer', () => {
+    const daten = emptyDaten()
+    daten.homeoffice.tage = '10'  // 60 € — unter Pauschbetrag, aber Freelancer
+    const hinweise = berechneOptimierungshinweise(daten, 'freelancer', 2025)
+    const ids = hinweise.map(h => h.id)
+    expect(ids).not.toContain('werbungskosten_pauschbetrag')
+  })
+
+  it('meldet selbstaendiger nie fahrtkosten_fehlt', () => {
+    const daten = emptyDaten()
+    const hinweise = berechneOptimierungshinweise(daten, 'selbstaendiger', 2025)
+    expect(hinweise.map(h => h.id)).not.toContain('fahrtkosten_fehlt')
+  })
 })

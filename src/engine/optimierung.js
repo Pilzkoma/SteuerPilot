@@ -8,6 +8,7 @@
 import { getJahreswerte, berechneFahrtkosten, berechneHomeofficePauschale } from './steuerberechnung.js'
 
 const PRIORITAET_ORDER = { hoch: 0, mittel: 1, niedrig: 2 }
+const euroFormat = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' })
 
 /**
  * Berechnet Optimierungshinweise basierend auf eingegebenen Steuerdaten.
@@ -37,10 +38,11 @@ export function berechneOptimierungshinweise(daten, nutzertyp, jahr = 2025) {
   }
 
   // ── Fahrtkosten (nur Angestellte) ────────────────────────────────────────────
+  const kmEinfach = parseFloat(fahrtkosten?.km) || 0
+  const arbeitstage = parseInt(fahrtkosten?.arbeitstage) || 0
+  const oeffentlichKosten = parseFloat(fahrtkosten?.oeffentlichKosten) || 0
+
   if (istAngestellter) {
-    const kmEinfach = parseFloat(fahrtkosten?.km) || 0
-    const arbeitstage = parseInt(fahrtkosten?.arbeitstage) || 0
-    const oeffentlichKosten = parseFloat(fahrtkosten?.oeffentlichKosten) || 0
     const hatFahrtkosten = (kmEinfach > 0 && arbeitstage > 0) || oeffentlichKosten > 0
     if (!hatFahrtkosten) {
       hinweise.push({
@@ -69,6 +71,7 @@ export function berechneOptimierungshinweise(daten, nutzertyp, jahr = 2025) {
 
   // ── Arbeitsmittel ────────────────────────────────────────────────────────────
   const arbeitsmittelListe = arbeitsmittel ?? []
+  // TODO: betriebsausgaben hints for freelancer/selbstaendiger (not yet in spec)
   const hatArbeitsmittel = arbeitsmittelListe.some(i => parseFloat(i.betrag) > 0)
   if (!hatArbeitsmittel) {
     hinweise.push({
@@ -107,28 +110,28 @@ export function berechneOptimierungshinweise(daten, nutzertyp, jahr = 2025) {
     })
   }
 
-  // ── Werbungskosten unter Pauschbetrag ────────────────────────────────────────
-  const kmEinfach = parseFloat(fahrtkosten?.km) || 0
-  const arbeitstage = parseInt(fahrtkosten?.arbeitstage) || 0
-  const fahrtkostenBetrag = !fahrtkosten?.oeffentlich && kmEinfach > 0 && arbeitstage > 0
-    ? berechneFahrtkosten(kmEinfach, arbeitstage, jahr)
-    : fahrtkosten?.oeffentlich
-      ? parseFloat(fahrtkosten?.oeffentlichKosten) || 0
-      : 0
-  const homeofficeBerechnet = homeofficeTage > 0 ? berechneHomeofficePauschale(homeofficeTage, jahr) : 0
-  const arbeitsmittelSumme = arbeitsmittelListe.reduce((s, i) => s + (parseFloat(i.betrag) || 0), 0)
-  const gesamtWerbungskosten = fahrtkostenBetrag + homeofficeBerechnet + arbeitsmittelSumme
+  // ── Werbungskosten unter Pauschbetrag (nur Angestellte) ──────────────────────
+  if (istAngestellter) {
+    const fahrtkostenBetrag = !fahrtkosten?.oeffentlich && kmEinfach > 0 && arbeitstage > 0
+      ? berechneFahrtkosten(kmEinfach, arbeitstage, jahr)
+      : fahrtkosten?.oeffentlich
+        ? oeffentlichKosten
+        : 0
+    const homeofficeBerechnet = homeofficeTage > 0 ? berechneHomeofficePauschale(homeofficeTage, jahr) : 0
+    const arbeitsmittelSumme = arbeitsmittelListe.reduce((s, i) => s + (parseFloat(i.betrag) || 0), 0)
+    const gesamtWerbungskosten = fahrtkostenBetrag + homeofficeBerechnet + arbeitsmittelSumme
 
-  if (gesamtWerbungskosten > 0 && gesamtWerbungskosten < werte.arbeitnehmerPauschbetrag) {
-    const differenz = Math.round((werte.arbeitnehmerPauschbetrag - gesamtWerbungskosten) * 100) / 100
-    hinweise.push({
-      id: 'werbungskosten_pauschbetrag',
-      titel: `Noch ${new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(differenz)} bis zum Pauschbetrag`,
-      beschreibung: `Der Arbeitnehmer-Pauschbetrag (${werte.arbeitnehmerPauschbetrag} €) wird automatisch angerechnet. Deine eingetragenen Werbungskosten liegen darunter — lohnt sich noch mehr einzutragen?`,
-      potenzial: differenz,
-      prioritaet: 'niedrig',
-      wizardSchritt: 'arbeitsmittel'
-    })
+    if (gesamtWerbungskosten > 0 && gesamtWerbungskosten < werte.arbeitnehmerPauschbetrag) {
+      const differenz = Math.round((werte.arbeitnehmerPauschbetrag - gesamtWerbungskosten) * 100) / 100
+      hinweise.push({
+        id: 'werbungskosten_pauschbetrag',
+        titel: `Noch ${euroFormat.format(differenz)} bis zum Pauschbetrag`,
+        beschreibung: `Der Arbeitnehmer-Pauschbetrag (${werte.arbeitnehmerPauschbetrag} €) wird automatisch angerechnet. Deine eingetragenen Werbungskosten liegen darunter — lohnt sich noch mehr einzutragen?`,
+        potenzial: differenz,
+        prioritaet: 'niedrig',
+        wizardSchritt: 'arbeitsmittel'
+      })
+    }
   }
 
   // ── Sortierung: hoch → mittel → niedrig ──────────────────────────────────────
