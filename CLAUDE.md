@@ -250,7 +250,7 @@ NIEMALS  Scan-Server ohne Token-Validierung betreiben
 
 ## Nächste Schritte (Reihenfolge)
 
-1. **Optimierungshinweise** — KI-basierte Steuer-Tipps basierend auf den eingegebenen Daten (z.B. "Du könntest noch X€ absetzen"). Neuer Screen in der Navigation.
+1. **Optimierungshinweise** — Design + Plan fertig (`docs/superpowers/plans/2026-03-26-optimierungshinweise.md`). Implementierung ausstehend.
 2. **Jahresübernahme & Vergleich** — Vorjahresdaten übernehmen, Jahresvergleich im Dashboard
 3. **Einstellungen** (Passwort ändern, Jetson-Verbindung, Sync-Status)
 4. **iOS App** — NUR nach expliziter Rückfrage beim User

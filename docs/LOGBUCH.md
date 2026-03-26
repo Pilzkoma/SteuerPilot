@@ -2,6 +2,39 @@
 
 ---
 
+## 2026-03-26 — Design: Optimierungshinweise
+
+### Was wurde gemacht
+
+Design und Implementierungsplan für den neuen "Optimierungshinweise"-Screen erstellt.
+
+### Entscheidungen
+
+- **Eigener Screen** in der Navigation (zwischen Umsatz und PDF Export)
+- **Regelbasiert** in Phase 1 — Jetson/KI-Integration folgt später im gleichen Hinweis-Format
+- **Approach:** Pure-JS-Engine-Funktion `berechneOptimierungshinweise()` in `src/engine/optimierung.js` — gibt strukturierte Hinweis-Objekte zurück, vollständig unit-testbar
+- Hinweise sortiert nach Priorität (hoch → mittel → niedrig), jede Karte hat "Jetzt eintragen"-Button → navigiert zum Wizard
+- Jetson kann später Hinweise im gleichen `{ id, titel, beschreibung, potenzial, prioritaet, wizardSchritt }` Format liefern
+
+### Hinweise geplant
+
+- Homeoffice-Pauschale nicht eingetragen (hoch)
+- Fahrtkosten fehlen — nur für Angestellte (hoch)
+- Krankenversicherung fehlt (hoch)
+- Arbeitsmittel fehlen (mittel)
+- Altersvorsorge fehlt (mittel)
+- Spenden fehlen (niedrig)
+- Werbungskosten unter Pauschbetrag (niedrig)
+
+### Offene Punkte / Nächste Schritte
+
+- **Optimierungshinweise implementieren** — Plan liegt unter `docs/superpowers/plans/2026-03-26-optimierungshinweise.md`
+- Jahresübernahme & Vergleich
+- Einstellungen (Passwort ändern, Jetson, Sync-Status)
+- iOS App — erst nach expliziter Rückfrage
+
+---
+
 ## 2026-03-26 — Phase 8: Dashboard-Navigation, Manueller Beleg, Manueller Umsatz
 
 ### Was wurde gebaut
