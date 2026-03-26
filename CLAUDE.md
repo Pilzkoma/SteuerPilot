@@ -231,8 +231,13 @@ NIEMALS  Scan-Server ohne Token-Validierung betreiben
 ## Project-Specific Notes
 
 [Wird laufend von Claude Code ergänzt:]
-- SQLCipher: nach npm install → electron-rebuild ausführen
+- SQLCipher: nach npm install → electron-rebuild ausführenls ~/.claude/skills/
 - electron-builder: macOS notarization braucht Apple Developer Account
 - Belegbilder: JPEG 85% (Kompromiss Dateigröße vs. OCR-Qualität)
 - Duplikat-Erkennung: gleicher Betrag + Datum ±7 Tage → Warnung anzeigen
 - iOS App: unter /ios-app/ im gleichen Git-Repo (nicht "Companion" — vollwertige App)
+- Framer Motion AnimatePresence: mode="wait" Pflicht bei Schritt-Slides
+- Draft-Persistenz: wizard_fortschritt Tabelle als JSON — Wiederaufnahme beim Öffnen
+- schaetzeRueckerstattung() gibt geschaetzteRueckerstattung zurück (nicht rueckerstattung)
+- DashboardScreen: Math.abs() für Anzeige — Engine gibt positiv/negativ zurück
+- Kategorie-Konstanten gesetzt: einnahmen ('lohn'|'honorar'|'sonstige'), ausgaben ('fahrtkosten'|'homeoffice'|'arbeitsmittel'|'krankenversicherung'|'altersvorsorge'|'spende'|'sonstige')

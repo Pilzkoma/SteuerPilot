@@ -157,3 +157,77 @@ Das komplette Projektfundament wurde von Null aufgebaut:
 - **Phase 4:** Dateneingabe-Wizard (Schritt-für-Schritt Formulare: Lohn, Fahrtkosten, Homeoffice, Arbeitsmittel, Sonderausgaben)
 - Lohnsteuer-Daten aus Wizard → Dashboard Schätzung wird vollständig
 - Context für nutzer/activeJahr wenn weitere Screens hinzukommen
+
+---
+
+## 2026-03-25 — Phase 4: Dateneingabe-Wizard
+
+### Was wurde gebaut
+
+Vollständiger 6-Schritt-Wizard für die Steuerdateneingabe:
+
+- **`src/screens/Wizard/WizardField.jsx`** — Wiederverwendbare Wrapper-Komponente für alle Formularfelder:
+  - Jedes Feld hat: Beschriftung, Kind-Element (Input/Toggle), Plain-Deutsch-Erklärungstext, ELSTER-Badge (Chip mit Formular + Zeile), optionaler Amber-Hinweisblock
+  - `Input`-Komponente: fokus-sensitiver Border, Suffix-Support (€, Tage, km), Typen (number, text)
+  - `Toggle`-Komponente: Pill-Switch für boolean Felder
+
+- **`src/screens/Wizard/steps/SchrittLohn.jsx`** — Schritt 1: Einnahmen
+  - Adaptiv nach Nutzertyp: Angestellte sehen Lohnsteuerbescheinigungsfelder (Bruttogehalt, Lohnsteuer, Soli, KiSt), Freelancer/Selbstständige sehen Honorareinnahmen + optionale Lohnsteuer Nebentätigkeit
+  - Live-Vorschau-Card wenn Werte eingetragen
+
+- **`src/screens/Wizard/steps/SchrittFahrtkosten.jsx`** — Schritt 2: Fahrtkosten
+  - Toggle ÖPNV/PKW: PKW = Entfernungspauschale (km × Arbeitstage), ÖPNV = tatsächliche Kosten
+  - Live-Berechnung via `berechneFahrtkosten()` aus der Engine
+
+- **`src/screens/Wizard/steps/SchrittHomeoffice.jsx`** — Schritt 3: Homeoffice-Pauschale
+  - Einzelfeld für Homeoffice-Tage, Live-Berechnung, Maximum-Warnung ab 210 Tagen
+  - Jahrswerte via `getJahreswerte()` — zukunftssicher für 2024/2025/2026
+
+- **`src/screens/Wizard/steps/SchrittArbeitsmittel.jsx`** — Schritt 4: Arbeitsmittel
+  - Dynamische Liste: Beschreibung + Betrag pro Posten, Hinzufügen/Entfernen mit Animationen
+  - Warnung wenn Einzelposten > 952 € (AfA-Pflicht)
+
+- **`src/screens/Wizard/steps/SchrittSonderausgaben.jsx`** — Schritt 5: Sonderausgaben & Betriebsausgaben
+  - Feste Felder: Krankenversicherung, Altersvorsorge, Spenden
+  - Betriebsausgaben-Liste (animiert) nur sichtbar für Freelancer und Selbstständige
+
+- **`src/screens/Wizard/steps/SchrittZusammenfassung.jsx`** — Schritt 6: Zusammenfassung
+  - Alle eingegebenen Werte auf einen Blick, mit ELSTER-Feldreferenzen
+  - Rückerstattungsschätzung (grüne Card) oder Nachzahlung (rote Card) via Engine
+  - Zeigt "Lohnsteuer fehlt für Schätzung" wenn nötig
+
+- **`src/screens/Wizard/WizardScreen.jsx`** — Wizard-Container:
+  - 6-Schritt-Indikator (done = Checkmark, aktiv = Amber-Pill, zukünftig = Grau)
+  - Slide-Animation zwischen Schritten (direction-aware, spring-basiert)
+  - Draft-Persistenz: Zwischenstand wird nach jedem Schritt in `wizard_fortschritt` gespeichert
+  - Wiederaufnahme: beim Öffnen wird offener Draft automatisch geladen
+  - Finaler Speichern-Button: löscht alte DB-Einträge (per gespeicherte_ids), schreibt alles neu, navigiert zum Dashboard
+
+### Entscheidungen
+
+- **Draft in `wizard_fortschritt` als JSON** — alles in einem Feld statt normalisierter Tabellen; Wiederaufnahme ohne komplexe Joins
+- **`gespeicherte_ids` im Draft** — beim erneuten Speichern werden alte Zeilen gelöscht und neu eingefügt; keine Duplikate, keine UPDATE-Fallunterscheidung
+- **Betriebsausgaben bei Freelancern in Schritt 5 eingebettet** — kein eigener Schritt, da es sinnvoll zusammen mit Sonderausgaben passt
+- **Bug in DashboardScreen repariert**: `ergebnis?.rueckerstattung` und `ergebnis?.nachzahlung` existieren nicht — Engine gibt `geschaetzteRueckerstattung` zurück. Fix: `Math.abs(ergebnis.geschaetzteRueckerstattung)`
+
+### Technische Erkenntnisse
+
+- `SELECT last_insert_rowid() as id` via `db.get()` nach jedem INSERT — so werden die IDs für `gespeicherte_ids` gesammelt
+- `AnimatePresence` braucht `mode="wait"` bei Schritt-Slides für saubere Enter/Exit-Sequenz
+
+### Status
+
+✅ Alle 6 Wizard-Schritte gebaut
+✅ WizardField mit ELSTER-Pflicht-Badges auf jedem Feld
+✅ Draft-Persistenz + Wiederaufnahme
+✅ Finales Speichern in DB (einnahmen + ausgaben Tabellen)
+✅ Navigation "Dateneingabe" in AppShell freigeschaltet (available: true)
+✅ App.jsx: Wizard-Route eingehängt
+✅ Build sauber (670 kB JS, keine Fehler)
+✅ Phase 4 abgeschlossen
+
+### Offene Punkte / Nächste Schritte
+
+- **Phase 5:** Belegverwaltung (Beleg fotografieren/importieren, OCR, Jetson-Analyse)
+- **Phase 6:** PDF-Export (strukturiert nach ELSTER-Feldern mit Feldhinweisen)
+- Dashboard-Metriken werden jetzt mit echten Wizard-Daten gefüllt (Einnahmen, Werbungskosten)

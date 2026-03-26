@@ -386,9 +386,9 @@ function EstimateCard({ metrics, activeJahr, delay = 0 }) {
     } catch {}
   }
 
-  const istRueckerstattung = ergebnis?.rueckerstattung > 0
+  const istRueckerstattung = (ergebnis?.geschaetzteRueckerstattung ?? 0) > 0
   const betrag = ergebnis
-    ? (istRueckerstattung ? ergebnis.rueckerstattung : ergebnis.nachzahlung)
+    ? Math.abs(ergebnis.geschaetzteRueckerstattung)
     : null
 
   return (

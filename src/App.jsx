@@ -4,6 +4,7 @@ import LoginScreen from './screens/Login/LoginScreen.jsx'
 import OnboardingScreen from './screens/Onboarding/OnboardingScreen.jsx'
 import AppShell from './components/AppShell/AppShell.jsx'
 import DashboardScreen from './screens/Dashboard/DashboardScreen.jsx'
+import WizardScreen from './screens/Wizard/WizardScreen.jsx'
 
 // Screens: 'login' | 'onboarding' | 'app'
 
@@ -54,6 +55,13 @@ function App() {
             <>
               {activeNav === 'dashboard' && (
                 <DashboardScreen nutzer={nutzer} activeJahr={activeJahr} />
+              )}
+              {activeNav === 'wizard' && (
+                <WizardScreen
+                  nutzer={nutzer}
+                  activeJahr={activeJahr}
+                  onNavigateDashboard={() => setActiveNav('dashboard')}
+                />
               )}
             </>
           )}
