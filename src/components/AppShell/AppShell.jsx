@@ -561,6 +561,20 @@ export default function AppShell({ children, activeScreen = 'dashboard', onNavig
       setJahre(jahreRows ?? [])
       const aktiv = jahreRows?.find(j => j.aktiv === 1)
       setActiveJahr(aktiv?.id ?? jahreRows?.[0]?.id ?? null)
+
+      // Aktuelles Kalenderjahr automatisch anlegen wenn noch nicht vorhanden
+      const aktuellesJahr = new Date().getFullYear()
+      const jahrExistiert = jahreRows?.some(j => j.jahr === aktuellesJahr)
+      if (!jahrExistiert) {
+        await window.steuerpilot.steuerjahr.anlegen(aktuellesJahr)
+        // Liste neu laden nach dem Anlegen
+        const aktualisierteJahre = await db.all(
+          'SELECT id, jahr, aktiv FROM steuerjahre ORDER BY jahr DESC', []
+        )
+        setJahre(aktualisierteJahre ?? [])
+        const aktivNeu = aktualisierteJahre?.find(j => j.aktiv === 1)
+        setActiveJahr(aktivNeu?.id ?? aktualisierteJahre?.[0]?.id ?? null)
+      }
     } catch (err) {
       console.error('AppShell loadShellData:', err)
     }
