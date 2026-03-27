@@ -2,6 +2,23 @@
 
 ---
 
+## 2026-03-27 — Desktop vollständig, iOS-Entwicklung startet
+
+### Status
+
+Der Desktop-Client (Electron) ist feature-vollständig. Alle geplanten Screens sind gebaut und navigierbar:
+Login → Onboarding → Dashboard → Wizard → Belege (+ OCR) → Umsatz (+ CSV-Import) → Optimierungshinweise → Jahresvergleich → PDF-Export → Einstellungen
+
+60/60 Engine-Tests grün.
+
+### Nächste Phase: iOS App
+
+Vollwertige SwiftUI-App unter `/ios-app/` — gleichwertiger Funktionsumfang wie Desktop, eigene SQLCipher-DB, offline-fähig. Entwicklung via Claude Code + XcodeBuildMCP.
+
+Nach iOS: Jetson OCR-Integration und WLAN-Sync.
+
+---
+
 ## 2026-03-27 — Phase 11: Einstellungen
 
 ### Was wurde gebaut

@@ -250,13 +250,20 @@ NIEMALS  Scan-Server ohne Token-Validierung betreiben
 
 ## Nächste Schritte (Reihenfolge)
 
-1. **iOS App** — NUR nach expliziter Rückfrage beim User
+1. **iOS App** — aktiv in Entwicklung (`/ios-app/`, Swift 6, SwiftUI, XcodeBuildMCP)
+2. **Jetson OCR-Integration** — Beleg fotografieren → LLaVA → Felder automatisch befüllen (Desktop + iOS)
+3. **WLAN-Sync** — Desktop ↔ iOS, Last-Write-Wins, SQLCipher auf beiden Geräten
 
-### Bereits erledigt
-- ✅ Einstellungen (Phase 11): Passwort ändern, Jetson-Verbindung, Sync-Platzhalter
-- ✅ Jahresübernahme & Vergleich Tasks 1–9: Engine, IPC-Handler, JahrSelector UI, Auto-Jahresanlage, JahresübernahmeModal, Wizard-Button, JahresvergleichWidget, JahresvergleichScreen, Navigation
-- ✅ Optimierungshinweise (Phase 9) — Engine `berechneOptimierungshinweise()`, Screen, Navigation
-- ✅ PDF-Export (Phase 7)
-- ✅ Dashboard-Navigation: MetricCards + Checkliste-Einträge klickbar (Phase 8)
-- ✅ Manueller Beleg: "Manuell hinzufügen" in BelegeScreen (Phase 8)
-- ✅ Manueller Umsatz: "+" Button + Inline-Formular in UmsatzScreen (Phase 8)
+### Desktop — vollständig abgeschlossen
+- ✅ Einstellungen (Phase 11): Passwort ändern, Jetson-Verbindung konfigurieren, Sync-Platzhalter
+- ✅ Jahresübernahme & Vergleich (Phase 10): Engine, IPC-Handler, JahrSelector, Auto-Jahresanlage, Modal, JahresvergleichScreen mit Recharts
+- ✅ Optimierungshinweise (Phase 9): Engine `berechneOptimierungshinweise()`, Screen, Navigation
+- ✅ Dashboard-Navigation + Manueller Beleg + Manueller Umsatz (Phase 8)
+- ✅ Umsatz-Dashboard (Phase 7): CSV-Import (ISO-8859-1, Bankerkennung), Charts, Ampel, Transaktionsliste mit Inline-Editing
+- ✅ PDF-Export nach ELSTER-Feldern (Phase 6): jsPDF, Anlage N/EÜR/Vorsorge, Disclaimer
+- ✅ OCR mit Tesseract.js (Phase 5): Singleton Worker, Betrag/Datum/Händler-Extraktion, OcrBadge
+- ✅ BelegeScreen (Phase 4/5): Drag&Drop, Detail Panel, Kategorisierung, Duplikat-Erkennung
+- ✅ Wizard (Phase 3): Schritt-für-Schritt-Dateneingabe, Draft-Persistenz, Jahresübernahme-Button
+- ✅ Dashboard (Phase 2): Steuerberechnung, Rückerstattungsschätzung, Checkliste, MetricCards
+- ✅ Login + Onboarding (Phase 1): SQLCipher DB-Init, Passwort-Create/Login-Modi
+- ✅ Fundament (Phase 0): Electron + React + SQLCipher + Design System
