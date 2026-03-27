@@ -2,6 +2,36 @@
 
 ---
 
+## 2026-03-27 — Phase 10 (Teil 3): Jahresübernahme & Vergleich — Tasks 8–9
+
+### Was wurde gebaut
+
+**Task 8 — JahresvergleichScreen (`src/screens/Jahresvergleich/JahresvergleichScreen.jsx`):**
+- Neuer Screen mit drei Balkendiagrammen (Einnahmen, Werbungskosten, geschätzte Steuerersparnis) via recharts
+- Jahr-Pills oben: Klick blendet einzelne Jahre ein/aus — mindestens ein Jahr bleibt immer aktiv
+- Tabelle darunter: alle Metriken pro Jahr auf einen Blick (inkl. Beleganzahl)
+- Steuerersparnis wird live via `schaetzeRueckerstattung()` berechnet
+- Empty State wenn weniger als 2 Jahre mit Daten vorhanden
+- Farben konsistent: jedes Jahr hat eine feste Farbe aus `JAHR_FARBEN`-Palette
+
+**Task 9 — Navigation (`AppShell.jsx` + `App.jsx`):**
+- `IconVergleich` SVG (drei Balken unterschiedlicher Höhe) als neues Nav-Icon
+- Eintrag `jahresvergleich` in `NAV_ITEMS` zwischen Optimierungshinweise und PDF Export
+- `JahresvergleichScreen` in `App.jsx` eingebunden — reagiert auf `activeNav === 'jahresvergleich'`
+- Dashboard-Widget (Task 7) navigiert bereits zu `jahresvergleich` — funktioniert damit vollständig
+
+### Entscheidungen
+
+- `JahresvergleichScreen` bekommt keine Props — lädt seine Daten selbst via `vergleich:laden` IPC
+- Balkendiagramme als separate Charts pro Metrik (nicht als grouped bar chart) — übersichtlicher bei vielen Jahren
+
+### Offene Punkte
+
+- Jahresübernahme & Vergleich vollständig abgeschlossen (Tasks 1–9)
+- Nächste Phase: Einstellungen (Passwort ändern, Jetson-Verbindung, Sync-Status)
+
+---
+
 ## 2026-03-27 — Phase 10 (Teil 1): Jahresübernahme & Vergleich — Tasks 1–3
 
 ### Was wurde gebaut

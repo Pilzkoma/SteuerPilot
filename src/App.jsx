@@ -8,6 +8,7 @@ import WizardScreen from './screens/Wizard/WizardScreen.jsx'
 import BelegeScreen from './screens/Belege/BelegeScreen.jsx'
 import UmsatzScreen from './screens/Umsatz/UmsatzScreen.jsx'
 import OptimierungScreen from './screens/Optimierung/OptimierungScreen.jsx'
+import JahresvergleichScreen from './screens/Jahresvergleich/JahresvergleichScreen.jsx'
 
 // Screens: 'login' | 'onboarding' | 'app'
 
@@ -78,6 +79,9 @@ function App() {
                   nutzer={nutzer}
                   onNavigate={setActiveNav}
                 />
+              )}
+              {activeNav === 'jahresvergleich' && (
+                <JahresvergleichScreen />
               )}
             </>
           )}

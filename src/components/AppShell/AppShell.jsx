@@ -56,6 +56,16 @@ function IconOptimierung() {
   )
 }
 
+function IconVergleich() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      <line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      <line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
 function IconPdf() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -95,6 +105,7 @@ const NAV_ITEMS = [
   { id: 'belege', label: 'Belege', icon: <IconBelege />, available: true },
   { id: 'umsatz', label: 'Umsatz', icon: <IconUmsatz />, available: true },
   { id: 'optimierung',  label: 'Optimierungshinweise',  icon: <IconOptimierung />,  available: true },
+  { id: 'jahresvergleich', label: 'Jahresvergleich', icon: <IconVergleich />, available: true },
   { id: 'pdf', label: 'PDF Export', icon: <IconPdf />, available: false },
 ]
 
