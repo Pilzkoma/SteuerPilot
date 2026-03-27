@@ -674,10 +674,11 @@ export default function AppShell({ children, activeScreen = 'dashboard', onNavig
       // Aktuelles Kalenderjahr automatisch anlegen wenn noch nicht vorhanden
       const aktuellesJahr = new Date().getFullYear()
       const jahrExistiert = jahreRows?.some(j => j.jahr === aktuellesJahr)
+      let aktualisierteJahre
       if (!jahrExistiert) {
         await window.steuerpilot.steuerjahr.anlegen(aktuellesJahr)
         // Liste neu laden nach dem Anlegen
-        const aktualisierteJahre = await db.all(
+        aktualisierteJahre = await db.all(
           'SELECT id, jahr, aktiv FROM steuerjahre ORDER BY jahr DESC', []
         )
         setJahre(aktualisierteJahre ?? [])
@@ -686,12 +687,15 @@ export default function AppShell({ children, activeScreen = 'dashboard', onNavig
       }
 
       // Übernahme-Check beim Start
-      const aktivId = aktiv?.id ?? jahreRows?.[0]?.id ?? null
-      if (aktivId) {
-        const pruefung = await window.steuerpilot.jahresubernahme.pruefen(aktivId)
+      // Wenn auto-year Block lief, aktualisierteJahre verwenden (sonst stale aktivId)
+      const aktivIdFinal = (typeof aktualisierteJahre !== 'undefined' && aktualisierteJahre)
+        ? (aktualisierteJahre.find(j => j.aktiv === 1)?.id ?? aktualisierteJahre[0]?.id ?? null)
+        : (aktiv?.id ?? jahreRows?.[0]?.id ?? null)
+      if (aktivIdFinal) {
+        const pruefung = await window.steuerpilot.jahresubernahme.pruefen(aktivIdFinal)
         if (pruefung.sollAnbieten) {
           setUbernahmeAngebot({
-            zielJahrId: aktivId,
+            zielJahrId: aktivIdFinal,
             quellJahrId: pruefung.quellJahrId,
             quellJahr: pruefung.quellJahr
           })
@@ -736,6 +740,7 @@ export default function AppShell({ children, activeScreen = 'dashboard', onNavig
         zielJahrId: ubernahmeAngebot.zielJahrId,
         quellJahrId: ubernahmeAngebot.quellJahrId
       })
+      await loadShellData()
     } catch (err) {
       console.error('Übernahme fehlgeschlagen:', err)
     } finally {
