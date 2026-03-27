@@ -103,9 +103,16 @@ const BOTTOM_ITEMS = [
 
 // ── Jahres-Selektor ───────────────────────────────────────────────────────────
 
-function JahrSelector({ jahre, activeJahr, onChangeJahr }) {
+function JahrSelector({ jahre, activeJahr, onChangeJahr, onAddJahr, onDeleteJahr }) {
   const [open, setOpen] = useState(false)
+  const [showAddMenu, setShowAddMenu] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState(null) // jahrId | null
   const aktiv = jahre.find(j => j.id === activeJahr)
+
+  const vorhandeneJahre = new Set(jahre.map(j => j.jahr))
+  const aktuellesKalenderjahr = new Date().getFullYear()
+  const verfuegbareNeueJahre = Array.from({ length: 10 }, (_, i) => aktuellesKalenderjahr - i)
+    .filter(j => !vorhandeneJahre.has(j))
 
   return (
     <div style={{ position: 'relative' }}>
@@ -137,13 +144,27 @@ function JahrSelector({ jahre, activeJahr, onChangeJahr }) {
             {aktiv?.jahr ?? '—'}
           </span>
         </div>
-        <motion.span
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={spring}
-          style={{ color: 'var(--color-on-surface-variant)', display: 'flex' }}
-        >
-          <IconChevronDown />
-        </motion.span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+          <span
+            onClick={e => { e.stopPropagation(); setShowAddMenu(v => !v) }}
+            style={{
+              width: 22, height: 22,
+              borderRadius: '50%',
+              background: 'var(--color-surface-container-high)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', fontSize: '1rem', color: 'var(--color-on-surface-variant)',
+              flexShrink: 0
+            }}
+            title="Jahr hinzufügen"
+          >+</span>
+          <motion.span
+            animate={{ rotate: open ? 180 : 0 }}
+            transition={spring}
+            style={{ color: 'var(--color-on-surface-variant)', display: 'flex' }}
+          >
+            <IconChevronDown />
+          </motion.span>
+        </div>
       </button>
 
       <AnimatePresence>
@@ -166,40 +187,175 @@ function JahrSelector({ jahre, activeJahr, onChangeJahr }) {
               transformOrigin: 'top'
             }}
           >
-            {jahre.map(j => (
-              <button
-                key={j.id}
-                onClick={() => { onChangeJahr(j.id); setOpen(false) }}
-                style={{
-                  width: '100%',
-                  background: j.id === activeJahr ? 'rgba(255,185,85,0.08)' : 'transparent',
-                  border: 'none',
-                  padding: '0.75rem 0.875rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  fontFamily: 'var(--font-family)',
-                  color: j.id === activeJahr ? 'var(--color-secondary)' : 'var(--color-on-surface)',
-                  fontSize: '0.875rem',
-                  fontWeight: j.id === activeJahr ? 700 : 400,
-                  transition: 'background 0.1s'
-                }}
-                onMouseEnter={e => { if (j.id !== activeJahr) e.currentTarget.style.background = 'var(--color-surface-container)' }}
-                onMouseLeave={e => { if (j.id !== activeJahr) e.currentTarget.style.background = 'transparent' }}
-              >
-                <span>{j.jahr}</span>
-                {j.id === activeJahr && (
-                  <span style={{
-                    fontSize: '0.5625rem', fontWeight: 700, letterSpacing: '0.1em',
-                    textTransform: 'uppercase', color: 'var(--color-secondary)'
-                  }}>Aktiv</span>
-                )}
-              </button>
-            ))}
+            {jahre.map(j => {
+              const istAktiv = j.id === activeJahr
+              return (
+                <div
+                  key={j.id}
+                  style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
+                  onMouseEnter={e => { if (!istAktiv) e.currentTarget.querySelector('.del-btn').style.opacity = '1' }}
+                  onMouseLeave={e => { if (!istAktiv) e.currentTarget.querySelector('.del-btn').style.opacity = '0' }}
+                >
+                  <button
+                    onClick={() => { onChangeJahr(j.id); setOpen(false) }}
+                    style={{
+                      flex: 1,
+                      background: istAktiv ? 'rgba(255,185,85,0.08)' : 'transparent',
+                      border: 'none',
+                      padding: '0.75rem 0.875rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontFamily: 'var(--font-family)',
+                      color: istAktiv ? 'var(--color-secondary)' : 'var(--color-on-surface)',
+                      fontSize: '0.875rem',
+                      fontWeight: istAktiv ? 700 : 400,
+                      transition: 'background 0.1s'
+                    }}
+                    onMouseEnter={e => { if (!istAktiv) e.currentTarget.style.background = 'var(--color-surface-container)' }}
+                    onMouseLeave={e => { if (!istAktiv) e.currentTarget.style.background = istAktiv ? 'rgba(255,185,85,0.08)' : 'transparent' }}
+                  >
+                    <span>{j.jahr}</span>
+                    {istAktiv && (
+                      <span style={{
+                        fontSize: '0.5625rem', fontWeight: 700, letterSpacing: '0.1em',
+                        textTransform: 'uppercase', color: 'var(--color-secondary)'
+                      }}>Aktiv</span>
+                    )}
+                  </button>
+                  <button
+                    className="del-btn"
+                    onClick={e => { e.stopPropagation(); setDeleteConfirm(j.id) }}
+                    style={{
+                      position: 'absolute', right: '0.5rem',
+                      opacity: istAktiv ? 0 : 0, transition: 'opacity 0.15s',
+                      background: 'transparent', border: 'none',
+                      cursor: istAktiv ? 'default' : 'pointer', padding: '0.25rem',
+                      color: 'var(--color-error)', display: 'flex',
+                      alignItems: 'center', justifyContent: 'center',
+                      pointerEvents: istAktiv ? 'none' : 'auto'
+                    }}
+                    title={`Jahr ${j.jahr} löschen`}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <polyline points="3 6 5 6 21 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M19 6l-1 14H6L5 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M10 11v6M14 11v6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M9 6V4h6v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+              )
+            })}
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AnimatePresence>
+        {showAddMenu && (
+          <motion.div
+            initial={{ opacity: 0, y: -4, scaleY: 0.95 }}
+            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+            exit={{ opacity: 0, y: -4, scaleY: 0.95 }}
+            transition={springGentle}
+            style={{
+              position: 'absolute',
+              top: 'calc(100% + 0.375rem)',
+              left: 0, right: 0,
+              background: 'var(--color-surface-container-highest)',
+              border: '1px solid var(--color-outline-variant)',
+              borderRadius: 'var(--radius-lg)',
+              overflow: 'hidden',
+              zIndex: 60,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+              transformOrigin: 'top'
+            }}
+          >
+            {verfuegbareNeueJahre.length === 0 ? (
+              <div style={{ padding: '0.75rem', fontSize: '0.8125rem', color: 'var(--color-on-surface-variant)' }}>
+                Alle Jahre vorhanden
+              </div>
+            ) : (
+              verfuegbareNeueJahre.map(j => (
+                <button
+                  key={j}
+                  onClick={() => { onAddJahr(j); setShowAddMenu(false) }}
+                  style={{
+                    width: '100%', background: 'transparent', border: 'none',
+                    padding: '0.75rem 0.875rem', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    fontFamily: 'var(--font-family)', color: 'var(--color-on-surface)',
+                    fontSize: '0.875rem', textAlign: 'left'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--color-surface-container)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+                >
+                  <span style={{ color: 'var(--color-secondary)', fontSize: '1rem', lineHeight: 1 }}>+</span>
+                  {j}
+                </button>
+              ))
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {deleteConfirm && (() => {
+        const jahrObj = jahre.find(j => j.id === deleteConfirm)
+        return (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 200,
+              background: 'rgba(0,0,0,0.6)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}
+            onClick={() => setDeleteConfirm(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={springGentle}
+              onClick={e => e.stopPropagation()}
+              style={{
+                background: 'var(--color-surface-container-highest)',
+                border: '1px solid var(--color-outline-variant)',
+                borderRadius: 'var(--radius-xl)',
+                padding: '2rem',
+                maxWidth: 380, width: '90%'
+              }}
+            >
+              <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-on-surface)', marginBottom: '0.5rem' }}>
+                Jahr {jahrObj?.jahr} löschen?
+              </div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--color-on-surface-variant)', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                Alle Daten für {jahrObj?.jahr} werden unwiderruflich gelöscht — Einnahmen, Ausgaben, Belege und Transaktionen.
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  style={{
+                    background: 'transparent', border: '1px solid var(--color-outline-variant)',
+                    borderRadius: 'var(--radius-lg)', padding: '0.625rem 1.25rem',
+                    cursor: 'pointer', fontFamily: 'var(--font-family)',
+                    color: 'var(--color-on-surface)', fontSize: '0.875rem'
+                  }}
+                >Abbrechen</button>
+                <button
+                  onClick={() => { onDeleteJahr(deleteConfirm); setDeleteConfirm(null); setOpen(false) }}
+                  style={{
+                    background: 'var(--color-error)', border: 'none',
+                    borderRadius: 'var(--radius-lg)', padding: '0.625rem 1.25rem',
+                    cursor: 'pointer', fontFamily: 'var(--font-family)',
+                    color: 'white', fontSize: '0.875rem', fontWeight: 600
+                  }}
+                >Löschen</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )
+      })()}
     </div>
   )
 }
@@ -278,7 +434,7 @@ function NavItem({ item, active, onClick }) {
 
 // ── Sidebar ───────────────────────────────────────────────────────────────────
 
-function Sidebar({ activeScreen, onNavigate, nutzer, jahre, activeJahr, onChangeJahr }) {
+function Sidebar({ activeScreen, onNavigate, nutzer, jahre, activeJahr, onChangeJahr, onAddJahr, onDeleteJahr }) {
   return (
     <div style={{
       width: 240,
@@ -312,7 +468,7 @@ function Sidebar({ activeScreen, onNavigate, nutzer, jahre, activeJahr, onChange
 
       {/* Jahresselektor */}
       <div style={{ padding: '0 1rem 1.25rem' }}>
-        <JahrSelector jahre={jahre} activeJahr={activeJahr} onChangeJahr={onChangeJahr} />
+        <JahrSelector jahre={jahre} activeJahr={activeJahr} onChangeJahr={onChangeJahr} onAddJahr={onAddJahr} onDeleteJahr={onDeleteJahr} />
       </div>
 
       {/* Trennlinie via Hintergrundfarbe */}
@@ -410,6 +566,33 @@ export default function AppShell({ children, activeScreen = 'dashboard', onNavig
     }
   }
 
+  async function handleAddJahr(jahr) {
+    try {
+      await window.steuerpilot.steuerjahr.anlegen(jahr)
+      await loadShellData()
+    } catch (err) {
+      console.error('Jahr anlegen fehlgeschlagen:', err)
+    }
+  }
+
+  async function handleDeleteJahr(jahrId) {
+    try {
+      await window.steuerpilot.steuerjahr.loeschen(jahrId)
+      if (jahrId === activeJahr) {
+        const neueJahre = jahre.filter(j => j.id !== jahrId)
+        const erstesJahr = neueJahre[0]
+        if (erstesJahr) {
+          await window.steuerpilot.db.run('UPDATE steuerjahre SET aktiv = 0', [])
+          await window.steuerpilot.db.run('UPDATE steuerjahre SET aktiv = 1 WHERE id = ?', [erstesJahr.id])
+          setActiveJahr(erstesJahr.id)
+        }
+      }
+      await loadShellData()
+    } catch (err) {
+      console.error('Jahr löschen fehlgeschlagen:', err)
+    }
+  }
+
   async function handleChangeJahr(jahrId) {
     if (jahrId === activeJahr) return
     const db = window.steuerpilot.db
@@ -446,6 +629,8 @@ export default function AppShell({ children, activeScreen = 'dashboard', onNavig
         jahre={jahre}
         activeJahr={activeJahr}
         onChangeJahr={handleChangeJahr}
+        onAddJahr={handleAddJahr}
+        onDeleteJahr={handleDeleteJahr}
       />
 
       {/* Content */}

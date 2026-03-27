@@ -2,6 +2,52 @@
 
 ---
 
+## 2026-03-27 — Phase 10 (Teil 1): Jahresübernahme & Vergleich — Tasks 1–3
+
+### Was wurde gebaut
+
+Grundlage für das Jahresübernahme & Jahresvergleich-Feature. Drei von neun Tasks umgesetzt.
+
+**Task 1 — Engine (`src/engine/jahresubernahme.js`):**
+- Pure-JS-Funktion `bereiteDatenFuerNeuesJahr({ nutzer, wizardDraft })` — kein Electron, vollständig testbar
+- Kopiert: Nutzerprofil (Stammdaten), Wizard-Draft als Vorlage
+- Setzt immer zurück: `schritt → 0`, `abgeschlossen → 0`, `gespeicherte_ids → []`
+- Kopiert bewusst nicht: Einnahmen, Ausgaben, Belege, Transaktionen
+- 6 Vitest-Tests, alle grün
+
+**Task 2 — IPC-Handler (`electron/main.js` + `electron/preload/index.js`):**
+- `jahresubernahme:pruefen` — prüft ob Übernahme angeboten werden soll (Zieljahr leer + Vorjahr mit Daten)
+- `jahresubernahme:ausfuehren` — kopiert Nutzer + Wizard-Draft ins Zieljahr
+- `steuerjahr:anlegen` — legt neues Jahr mit korrektem Grundfreibetrag an (2024: 11.604€, 2025: 12.096€, Fallback: 12.096€)
+- `steuerjahr:loeschen` — löscht Jahr komplett (alle verknüpften Tabellen)
+- `vergleich:laden` — aggregiert Einnahmen, Ausgaben, Beleganzahl für alle Jahre
+- Alle 5 Handler im Preload-Bridge ergänzt
+
+**Task 3 — JahrSelector UI (`src/components/AppShell/AppShell.jsx`):**
+- "+" Button im JahrSelector öffnet Dropdown mit verfügbaren Jahren (aktuelle Jahr − 9 bis aktuell, ohne bereits existierende)
+- Löschen-Icon (Mülleimer) erscheint beim Hover neben jedem inaktiven Jahr
+- Sicherheitsdialog vor dem Löschen mit Erklärung was unwiderruflich gelöscht wird
+- Aktives Jahr kann nicht gelöscht werden (Icon deaktiviert)
+- `handleAddJahr` / `handleDeleteJahr` in AppShell — rufen IPC auf, laden Shell-Daten neu
+- Beim Löschen des aktiven Jahres: automatisch auf erstes verbleibendes Jahr wechseln
+
+### Entscheidungen
+
+- Jahresauswahl als Dropdown-Liste statt freie Texteingabe — verhindert ungültige Jahre
+- Nur die letzten 10 Jahre angeboten (aktuell − 9 bis aktuell) — reicht für alle Steuerfälle
+- `handleDeleteJahr` prüft selbst ob gelöschtes Jahr das aktive war — AppShell bleibt konsistent
+
+### Offene Punkte (nächste Session)
+
+- Task 4: Automatisches Anlegen des aktuellen Jahres beim App-Start
+- Task 5: `JahresübernahmeModal` + AppShell-Integration (Trigger wenn neues Jahr leer)
+- Task 6: Manueller "Vom Vorjahr übernehmen"-Button im WizardScreen
+- Task 7: `JahresvergleichWidget` im Dashboard
+- Task 8: `JahresvergleichScreen` mit SVG-Balkendiagrammen + Tabelle
+- Task 9: Navigation für Jahresvergleich-Screen in NAV_ITEMS
+
+---
+
 ## 2026-03-26 — Phase 9: Optimierungshinweise implementiert
 
 ### Was wurde gebaut
