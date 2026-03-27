@@ -12,7 +12,8 @@ contextBridge.exposeInMainWorld('steuerpilot', {
     close: () => ipcRenderer.invoke('db:close'),
     get: (sql, params) => ipcRenderer.invoke('db:get', sql, params),
     all: (sql, params) => ipcRenderer.invoke('db:all', sql, params),
-    run: (sql, params) => ipcRenderer.invoke('db:run', sql, params)
+    run: (sql, params) => ipcRenderer.invoke('db:run', sql, params),
+    rekey: (neuesPasswort) => ipcRenderer.invoke('db:rekey', neuesPasswort),
   },
 
   // ── Belegverwaltung ────────────────────────────────────────────────────────
@@ -52,5 +53,16 @@ contextBridge.exposeInMainWorld('steuerpilot', {
   },
   vergleich: {
     laden: () => ipcRenderer.invoke('vergleich:laden'),
+  },
+
+  // ── Einstellungen ──────────────────────────────────────────────────────────
+  einstellungen: {
+    get:  ()                    => ipcRenderer.invoke('einstellungen:get'),
+    set:  (schluessel, wert)    => ipcRenderer.invoke('einstellungen:set', { schluessel, wert }),
+  },
+
+  // ── Jetson ─────────────────────────────────────────────────────────────────
+  jetson: {
+    test: (url, token) => ipcRenderer.invoke('jetson:test', url, token),
   },
 })

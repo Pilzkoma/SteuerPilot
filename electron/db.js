@@ -238,3 +238,19 @@ export async function dbRun(sql, params = []) {
     })
   })
 }
+
+/**
+ * Ändert das Datenbankpasswort (SQLCipher PRAGMA rekey).
+ */
+export async function rekeyDb(neuesPasswort) {
+  if (!db) throw new Error('Datenbank nicht geöffnet.')
+  if (!neuesPasswort || neuesPasswort.trim() === '') {
+    throw new Error('Passwort darf nicht leer sein.')
+  }
+  return new Promise((resolve, reject) => {
+    db.run(`PRAGMA rekey = '${neuesPasswort.replace(/'/g, "''")}'`, (err) => {
+      if (err) return reject(err)
+      resolve({ ok: true })
+    })
+  })
+}

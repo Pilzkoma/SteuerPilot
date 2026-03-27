@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync, unlinkSync } from '
 import { promises as fs } from 'fs'
 import { randomUUID } from 'crypto'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import { initDb, closeDb, dbGet, dbAll, dbRun } from './db.js'
+import { initDb, closeDb, dbGet, dbAll, dbRun, rekeyDb } from './db.js'
 import Tesseract from 'tesseract.js'
 import pdfParse from 'pdf-parse'
 import { extrahiereAlles } from '../src/engine/ocrExtraction.js'
@@ -311,6 +311,50 @@ ipcMain.handle('vergleich:laden', async () => {
     }
   }))
   return ergebnisse
+})
+
+// ── Einstellungen ─────────────────────────────────────────────────────────────
+
+ipcMain.handle('einstellungen:get', async () => {
+  const rows = await dbAll('SELECT schluessel, wert FROM einstellungen', [])
+  return Object.fromEntries((rows ?? []).map(r => [r.schluessel, r.wert]))
+})
+
+ipcMain.handle('einstellungen:set', async (_event, { schluessel, wert }) => {
+  await dbRun(
+    `INSERT OR REPLACE INTO einstellungen (schluessel, wert, zuletzt_geaendert)
+     VALUES (?, ?, datetime('now'))`,
+    [schluessel, wert]
+  )
+  return { ok: true }
+})
+
+ipcMain.handle('db:rekey', async (_event, neuesPasswort) => {
+  if (!neuesPasswort || neuesPasswort.trim() === '') {
+    return { ok: false, fehler: 'Passwort darf nicht leer sein.' }
+  }
+  return await rekeyDb(neuesPasswort)
+})
+
+ipcMain.handle('jetson:test', async (_event, url, token) => {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 5000)
+  try {
+    const res = await fetch(`${url.replace(/\/$/, '')}/api/tags`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      signal: controller.signal
+    })
+    clearTimeout(timeout)
+    if (res.status === 401) return { ok: false, fehler: 'Ungültiger Token (401).' }
+    if (!res.ok) return { ok: false, fehler: `HTTP ${res.status}` }
+    const data = await res.json()
+    const modelle = (data.models ?? []).map(m => m.name).filter(Boolean)
+    return { ok: true, modelle }
+  } catch (err) {
+    clearTimeout(timeout)
+    if (err.name === 'AbortError') return { ok: false, fehler: 'Timeout — Jetson nicht erreichbar.' }
+    return { ok: false, fehler: err.message ?? 'Verbindungsfehler.' }
+  }
 })
 
 // ── App Lifecycle ─────────────────────────────────────────────────────────────
