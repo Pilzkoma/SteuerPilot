@@ -9,6 +9,7 @@ import BelegeScreen from './screens/Belege/BelegeScreen.jsx'
 import UmsatzScreen from './screens/Umsatz/UmsatzScreen.jsx'
 import OptimierungScreen from './screens/Optimierung/OptimierungScreen.jsx'
 import JahresvergleichScreen from './screens/Jahresvergleich/JahresvergleichScreen.jsx'
+import EinstellungenScreen from './screens/Einstellungen/EinstellungenScreen.jsx'
 
 // Screens: 'login' | 'onboarding' | 'app'
 
@@ -82,6 +83,9 @@ function App() {
               )}
               {activeNav === 'jahresvergleich' && (
                 <JahresvergleichScreen />
+              )}
+              {activeNav === 'einstellungen' && (
+                <EinstellungenScreen />
               )}
             </>
           )}

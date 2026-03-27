@@ -110,7 +110,7 @@ const NAV_ITEMS = [
 ]
 
 const BOTTOM_ITEMS = [
-  { id: 'einstellungen', label: 'Einstellungen', icon: <IconSettings />, available: false },
+  { id: 'einstellungen', label: 'Einstellungen', icon: <IconSettings />, available: true },
 ]
 
 // ── Jahres-Selektor ───────────────────────────────────────────────────────────
