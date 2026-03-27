@@ -480,7 +480,7 @@ export default function WizardScreen({ nutzer, activeJahr, onNavigateDashboard }
             animate={{ opacity: 1, y: 0 }}
             transition={springGentle}
             style={{
-              padding: '0.625rem 0',
+              padding: '0.625rem 2rem',
               display: 'flex', alignItems: 'center', justifyContent: 'flex-end'
             }}
           >
