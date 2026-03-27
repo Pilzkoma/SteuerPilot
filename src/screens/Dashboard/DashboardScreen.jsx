@@ -475,6 +475,101 @@ function EstimateCard({ metrics, activeJahr, delay = 0 }) {
   )
 }
 
+// ── JahresvergleichWidget ─────────────────────────────────────────────────────
+
+function JahresvergleichWidget({ delay = 0, onNavigate }) {
+  const [daten, setDaten] = useState(null)
+
+  useEffect(() => {
+    window.steuerpilot.vergleich.laden().then(ergebnisse => {
+      const mitDaten = ergebnisse.filter(e => e.einnahmen > 0 || e.ausgaben > 0)
+      if (mitDaten.length >= 2) setDaten(mitDaten)
+    }).catch(() => {})
+  }, [])
+
+  if (!daten) return null
+
+  const aktuell = daten[daten.length - 1]
+  const vorjahr = daten[daten.length - 2]
+
+  function delta(neu, alt) {
+    if (!alt || alt === 0) return null
+    const pct = Math.round(((neu - alt) / Math.abs(alt)) * 100)
+    return pct
+  }
+
+  function DeltaBadge({ wert }) {
+    if (wert === null) return null
+    const pos = wert >= 0
+    return (
+      <span style={{
+        fontSize: '0.625rem', fontWeight: 700,
+        color: pos ? 'var(--color-tertiary)' : 'var(--color-error)',
+        background: pos ? 'rgba(168,199,160,0.12)' : 'rgba(255,138,128,0.1)',
+        padding: '0.125rem 0.375rem',
+        borderRadius: 'var(--radius-pill)',
+        marginLeft: '0.375rem'
+      }}>
+        {pos ? '+' : ''}{wert}%
+      </span>
+    )
+  }
+
+  const reihen = [
+    { label: 'Einnahmen', aktuellWert: aktuell.einnahmen, vorjahrWert: vorjahr.einnahmen },
+    { label: 'Werbungskosten', aktuellWert: aktuell.ausgaben, vorjahrWert: vorjahr.ausgaben },
+  ]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...springGentle, delay }}
+      onClick={onNavigate ? () => onNavigate('jahresvergleich') : undefined}
+      style={{
+        background: 'var(--color-surface-container)',
+        borderRadius: 'var(--radius-xl)',
+        padding: '1.5rem',
+        cursor: onNavigate ? 'pointer' : 'default'
+      }}
+      onMouseEnter={onNavigate ? e => { e.currentTarget.style.filter = 'brightness(1.06)' } : undefined}
+      onMouseLeave={onNavigate ? e => { e.currentTarget.style.filter = '' } : undefined}
+    >
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginBottom: '1rem'
+      }}>
+        <div>
+          <div style={{
+            fontSize: '0.625rem', fontWeight: 700, letterSpacing: '0.16em',
+            textTransform: 'uppercase', color: 'var(--color-on-surface-variant)'
+          }}>Jahresvergleich</div>
+          <div style={{
+            fontSize: '0.8125rem', fontWeight: 500, color: 'var(--color-on-surface)', marginTop: '0.125rem'
+          }}>{vorjahr.jahr} → {aktuell.jahr}</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ color: 'var(--color-on-surface-variant)' }}>
+          <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+        {reihen.map(r => (
+          <div key={r.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--color-on-surface-variant)' }}>{r.label}</span>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-on-surface)' }}>
+                {formatEuro(r.aktuellWert)}
+              </span>
+              <DeltaBadge wert={delta(r.aktuellWert, r.vorjahrWert)} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  )
+}
+
 // ── Haupt-Komponente ──────────────────────────────────────────────────────────
 
 export default function DashboardScreen({ nutzer, activeJahr, onNavigate }) {
@@ -627,6 +722,11 @@ export default function DashboardScreen({ nutzer, activeJahr, onNavigate }) {
           activeJahr={activeJahr}
           delay={0.18}
         />
+      </div>
+
+      {/* Jahresvergleich Widget — nur wenn Vorjahresdaten existieren */}
+      <div style={{ marginBottom: '1rem' }}>
+        <JahresvergleichWidget delay={0.21} onNavigate={onNavigate} />
       </div>
 
       {/* Untere Reihe: Fristen + Checklist */}
