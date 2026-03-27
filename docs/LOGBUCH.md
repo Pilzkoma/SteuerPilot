@@ -2,6 +2,39 @@
 
 ---
 
+## 2026-03-27 — Phase 11: Einstellungen
+
+### Was wurde gebaut
+
+**EinstellungenScreen (`src/screens/Einstellungen/EinstellungenScreen.jsx`):**
+- Passwort-Sektion: SQLCipher `PRAGMA rekey` — Passwort ändern ohne App-Neustart, Erfolgs-Badge verschwindet nach 3s
+- Jetson-Sektion: URL + Token konfigurieren, getrennte "Speichern"- und "Verbindung testen"-Buttons
+  - Test ruft `/api/tags` (Ollama-kompatibel) auf, zeigt verbundene Modelle bei Erfolg
+  - Timeout nach 5s, spezifische Fehlermeldungen (401, Timeout, Netzwerkfehler)
+  - Beim Screen-Load: gespeicherte Werte aus `einstellungen`-Tabelle vorgeladen
+- Sync-Sektion: Platzhalter mit "Bald"-Badge — wird mit iOS-App aktiviert
+
+**Neue IPC-Handler (`electron/main.js`):**
+- `einstellungen:get` — alle Schlüssel als Key-Value-Map
+- `einstellungen:set` — einzelnen Schlüssel schreiben (INSERT OR REPLACE)
+- `db:rekey` — SQLCipher PRAGMA rekey mit Fehlerbehandlung
+- `jetson:test` — HTTP-Test gegen Ollama `/api/tags`, 5s Timeout
+
+**`rekeyDb()` in `electron/db.js`:** Neue Export-Funktion für Passwort-Wechsel.
+
+### Entscheidungen
+
+- Speichern und Testen sind getrennte Aktionen — Nutzer kann testen ohne zu speichern (und umgekehrt)
+- `PRAGMA rekey` lässt sich nicht mit Bound Parameters aufrufen — einfaches Escaping (`replace(/'/g, "''")`) wie beim initialen `PRAGMA key`
+- Token-Feld masked per default (type=password), toggle-Icon zum Einblenden
+- StatusBadge nutzt Design Tokens statt hardcodierter Farben
+
+### Offene Punkte
+
+- Sync-Sektion wird mit der iOS-App implementiert
+
+---
+
 ## 2026-03-27 — Phase 10 (Teil 3): Jahresübernahme & Vergleich — Tasks 8–9
 
 ### Was wurde gebaut

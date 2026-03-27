@@ -250,10 +250,10 @@ NIEMALS  Scan-Server ohne Token-Validierung betreiben
 
 ## Nächste Schritte (Reihenfolge)
 
-1. **Einstellungen** (Passwort ändern, Jetson-Verbindung, Sync-Status)
-3. **iOS App** — NUR nach expliziter Rückfrage beim User
+1. **iOS App** — NUR nach expliziter Rückfrage beim User
 
 ### Bereits erledigt
+- ✅ Einstellungen (Phase 11): Passwort ändern, Jetson-Verbindung, Sync-Platzhalter
 - ✅ Jahresübernahme & Vergleich Tasks 1–9: Engine, IPC-Handler, JahrSelector UI, Auto-Jahresanlage, JahresübernahmeModal, Wizard-Button, JahresvergleichWidget, JahresvergleichScreen, Navigation
 - ✅ Optimierungshinweise (Phase 9) — Engine `berechneOptimierungshinweise()`, Screen, Navigation
 - ✅ PDF-Export (Phase 7)
