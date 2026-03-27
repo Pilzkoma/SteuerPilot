@@ -9,6 +9,7 @@ import SchrittHomeoffice from './steps/SchrittHomeoffice.jsx'
 import SchrittArbeitsmittel from './steps/SchrittArbeitsmittel.jsx'
 import SchrittSonderausgaben from './steps/SchrittSonderausgaben.jsx'
 import SchrittZusammenfassung from './steps/SchrittZusammenfassung.jsx'
+import JahresubernahmeModal from '../../components/JahresubernahmeModal/JahresubernahmeModal.jsx'
 
 // ── Schritte Config ───────────────────────────────────────────────────────────
 
@@ -124,6 +125,34 @@ export default function WizardScreen({ nutzer, activeJahr, onNavigateDashboard }
   const [daten, setDaten] = useState(emptyDaten())
   const [isSaving, setIsSaving] = useState(false)
   const [loaded, setLoaded] = useState(false)
+
+  const [ubernahmeAngebot, setUbernahmeAngebot] = useState(null)
+
+  useEffect(() => {
+    if (!activeJahr?.id) return
+    window.steuerpilot.jahresubernahme.pruefen(activeJahr.id).then(pruefung => {
+      if (pruefung.sollAnbieten) setUbernahmeAngebot(pruefung)
+      else setUbernahmeAngebot(null)
+    }).catch(() => setUbernahmeAngebot(null))
+  }, [activeJahr?.id])
+
+  const [showUbernahmeModal, setShowUbernahmeModal] = useState(false)
+
+  async function handleWizardUbernehmen() {
+    if (!ubernahmeAngebot || !activeJahr?.id) return
+    try {
+      await window.steuerpilot.jahresubernahme.ausfuehren({
+        zielJahrId: activeJahr.id,
+        quellJahrId: ubernahmeAngebot.quellJahrId
+      })
+      setUbernahmeAngebot(null)
+      setShowUbernahmeModal(false)
+      // Draft neu laden damit Wizard mit den übernommenen Daten befüllt wird
+      await loadFortschritt()
+    } catch (err) {
+      console.error('Wizard Übernahme fehlgeschlagen:', err)
+    }
+  }
 
   const nutzertyp = nutzer?.nutzertyp ?? 'angestellter'
 
@@ -445,6 +474,38 @@ export default function WizardScreen({ nutzer, activeJahr, onNavigateDashboard }
           </div>
         </div>
 
+        {ubernahmeAngebot && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={springGentle}
+            style={{
+              padding: '0.625rem 0',
+              display: 'flex', alignItems: 'center', justifyContent: 'flex-end'
+            }}
+          >
+            <button
+              onClick={() => setShowUbernahmeModal(true)}
+              style={{
+                background: 'rgba(255,185,85,0.1)',
+                border: '1px solid rgba(255,185,85,0.25)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '0.5rem 1rem',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-family)',
+                color: 'var(--color-secondary)',
+                fontSize: '0.8125rem', fontWeight: 600,
+                display: 'flex', alignItems: 'center', gap: '0.5rem'
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              Vom Vorjahr übernehmen ({ubernahmeAngebot.quellJahr})
+            </button>
+          </motion.div>
+        )}
+
         {/* Step Indicator */}
         <StepIndicator aktiv={schritt} gesamt={SCHRITTE.length} />
       </div>
@@ -619,6 +680,17 @@ export default function WizardScreen({ nutzer, activeJahr, onNavigateDashboard }
           )}
         </motion.button>
       </div>
+
+      <AnimatePresence>
+        {showUbernahmeModal && ubernahmeAngebot && (
+          <JahresubernahmeModal
+            key="wizard-ubernahme"
+            angebot={ubernahmeAngebot}
+            onUbernehmen={handleWizardUbernehmen}
+            onAbbrechen={() => setShowUbernahmeModal(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
