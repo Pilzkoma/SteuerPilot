@@ -212,6 +212,107 @@ ipcMain.handle('transaktionen:delete', async (event, id) => {
   return dbRun('DELETE FROM transaktionen WHERE id = ?', [id])
 })
 
+// ── Jahresübernahme & Jahresvergleich ────────────────────────────────────────
+
+ipcMain.handle('jahresubernahme:pruefen', async (_event, zielJahrId) => {
+  // Gibt zurück: { sollAnbieten: bool, quellJahrId: number|null, quellJahr: number|null }
+  const zielCount = await dbGet(
+    `SELECT (SELECT COUNT(*) FROM einnahmen WHERE steuerjahr_id = ?) +
+            (SELECT COUNT(*) FROM wizard_fortschritt WHERE steuerjahr_id = ?) as gesamt`,
+    [zielJahrId, zielJahrId]
+  )
+  if ((zielCount?.gesamt ?? 0) > 0) {
+    return { sollAnbieten: false, quellJahrId: null, quellJahr: null }
+  }
+  const zielRow = await dbGet('SELECT jahr FROM steuerjahre WHERE id = ?', [zielJahrId])
+  const quellRow = await dbGet(
+    `SELECT sj.id, sj.jahr FROM steuerjahre sj
+     WHERE sj.jahr < ? AND (
+       (SELECT COUNT(*) FROM einnahmen WHERE steuerjahr_id = sj.id) +
+       (SELECT COUNT(*) FROM wizard_fortschritt WHERE steuerjahr_id = sj.id)
+     ) > 0
+     ORDER BY sj.jahr DESC LIMIT 1`,
+    [zielRow?.jahr ?? 9999]
+  )
+  if (!quellRow) return { sollAnbieten: false, quellJahrId: null, quellJahr: null }
+  return { sollAnbieten: true, quellJahrId: quellRow.id, quellJahr: quellRow.jahr }
+})
+
+ipcMain.handle('jahresubernahme:ausfuehren', async (_event, { zielJahrId, quellJahrId }) => {
+  const nutzer = await dbGet('SELECT * FROM nutzer LIMIT 1', [])
+  const wizardDraft = await dbGet(
+    'SELECT daten FROM wizard_fortschritt WHERE steuerjahr_id = ? ORDER BY id DESC LIMIT 1',
+    [quellJahrId]
+  )
+  if (!nutzer) return { success: false, fehler: 'Kein Nutzerprofil gefunden.' }
+
+  // Nutzer-Stammdaten aktualisieren (bleiben jahresunabhängig in nutzer-Tabelle)
+  await dbRun(
+    `UPDATE nutzer SET vorname=?, nachname=?, steuer_id=?, finanzamt=?, steuernummer=?, geburtsdatum=?, iban=?, nutzertyp=?, zuletzt_geaendert=datetime('now') WHERE id=?`,
+    [nutzer.vorname, nutzer.nachname, nutzer.steuer_id, nutzer.finanzamt,
+     nutzer.steuernummer, nutzer.geburtsdatum, nutzer.iban, nutzer.nutzertyp, nutzer.id]
+  )
+
+  if (wizardDraft?.daten) {
+    let parsed
+    try { parsed = JSON.parse(wizardDraft.daten) } catch { parsed = null }
+    if (parsed) {
+      parsed.gespeicherte_ids = { einnahmen: [], ausgaben: [] }
+      await dbRun(
+        `INSERT OR REPLACE INTO wizard_fortschritt (steuerjahr_id, schritt, daten, abgeschlossen)
+         VALUES (?, 0, ?, 0)`,
+        [zielJahrId, JSON.stringify(parsed)]
+      )
+    }
+  }
+  return { success: true }
+})
+
+ipcMain.handle('steuerjahr:anlegen', async (_event, jahr) => {
+  // Bekannte Grundfreibeträge; Fallback auf 2025-Werte
+  const GRUNDFREIBETRAEGE = { 2024: 11604, 2025: 12096 }
+  const grundfreibetrag = GRUNDFREIBETRAEGE[jahr] ?? 12096
+  await dbRun(
+    `INSERT OR IGNORE INTO steuerjahre (jahr, grundfreibetrag, arbeitnehmer_pauschbetrag, aktiv)
+     VALUES (?, ?, 1230.00, 0)`,
+    [jahr, grundfreibetrag]
+  )
+  return await dbGet('SELECT * FROM steuerjahre WHERE jahr = ?', [jahr])
+})
+
+ipcMain.handle('steuerjahr:loeschen', async (_event, jahrId) => {
+  await dbRun('DELETE FROM transaktionen WHERE steuerjahr_id = ?', [jahrId])
+  await dbRun('DELETE FROM belege WHERE steuerjahr_id = ?', [jahrId])
+  await dbRun('DELETE FROM ausgaben WHERE steuerjahr_id = ?', [jahrId])
+  await dbRun('DELETE FROM einnahmen WHERE steuerjahr_id = ?', [jahrId])
+  await dbRun('DELETE FROM wizard_fortschritt WHERE steuerjahr_id = ?', [jahrId])
+  await dbRun('DELETE FROM steuerjahre WHERE id = ?', [jahrId])
+  return { success: true }
+})
+
+ipcMain.handle('vergleich:laden', async () => {
+  const jahre = await dbAll('SELECT id, jahr FROM steuerjahre ORDER BY jahr ASC', [])
+  const ergebnisse = await Promise.all(jahre.map(async j => {
+    const einnahmen = await dbGet(
+      'SELECT COALESCE(SUM(betrag), 0) as total FROM einnahmen WHERE steuerjahr_id = ?', [j.id]
+    )
+    const ausgaben = await dbGet(
+      'SELECT COALESCE(SUM(betrag), 0) as total FROM ausgaben WHERE steuerjahr_id = ? AND abzugsfaehig = 1', [j.id]
+    )
+    const belege = await dbGet(
+      'SELECT COUNT(*) as total FROM belege WHERE steuerjahr_id = ?', [j.id]
+    )
+    return {
+      jahrId: j.id,
+      jahr: j.jahr,
+      einnahmen: einnahmen?.total ?? 0,
+      ausgaben: ausgaben?.total ?? 0,
+      belege: belege?.total ?? 0
+    }
+  }))
+  return ergebnisse
+})
+
 // ── App Lifecycle ─────────────────────────────────────────────────────────────
 
 app.whenReady().then(() => {

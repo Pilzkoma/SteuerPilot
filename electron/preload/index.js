@@ -39,5 +39,18 @@ contextBridge.exposeInMainWorld('steuerpilot', {
     saveBatch: (payload)      => ipcRenderer.invoke('transaktionen:save-batch', payload),
     update:    (payload)      => ipcRenderer.invoke('transaktionen:update', payload),
     delete:    (id)           => ipcRenderer.invoke('transaktionen:delete', id)
-  }
+  },
+
+  // ── Jahresübernahme & Jahresvergleich ─────────────────────────────────────
+  jahresubernahme: {
+    pruefen:    (zielJahrId) => ipcRenderer.invoke('jahresubernahme:pruefen', zielJahrId),
+    ausfuehren: (payload)    => ipcRenderer.invoke('jahresubernahme:ausfuehren', payload),
+  },
+  steuerjahr: {
+    anlegen:  (jahr)   => ipcRenderer.invoke('steuerjahr:anlegen', jahr),
+    loeschen: (jahrId) => ipcRenderer.invoke('steuerjahr:loeschen', jahrId),
+  },
+  vergleich: {
+    laden: () => ipcRenderer.invoke('vergleich:laden'),
+  },
 })
