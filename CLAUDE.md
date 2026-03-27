@@ -250,18 +250,14 @@ NIEMALS  Scan-Server ohne Token-Validierung betreiben
 
 ## Nächste Schritte (Reihenfolge)
 
-1. **Jahresübernahme & Vergleich** (in Arbeit, Tasks 4–9 offen) — Plan: `docs/superpowers/plans/2026-03-27-jahresubernahme-vergleich.md`
-   - Task 4: Auto-year creation on app start
-   - Task 5: JahresübernahmeModal + AppShell integration
-   - Task 6: Wizard manual Übernahme button
-   - Task 7: Dashboard JahresvergleichWidget
-   - Task 8: JahresvergleichScreen
+1. **Jahresübernahme & Vergleich** (in Arbeit, Tasks 8–9 offen) — Plan: `docs/superpowers/plans/2026-03-27-jahresubernahme-vergleich.md`
+   - Task 8: JahresvergleichScreen (Balkendiagramme + Tabelle)
    - Task 9: Navigation wiring (JahresvergleichScreen in NAV_ITEMS)
 2. **Einstellungen** (Passwort ändern, Jetson-Verbindung, Sync-Status)
 3. **iOS App** — NUR nach expliziter Rückfrage beim User
 
 ### Bereits erledigt
-- ✅ Jahresübernahme Tasks 1–3: Engine `bereiteDatenFuerNeuesJahr()`, IPC-Handler (5 Stück), JahrSelector +/Delete UI
+- ✅ Jahresübernahme Tasks 1–7: Engine, IPC-Handler, JahrSelector UI, Auto-Jahresanlage, JahresübernahmeModal, Wizard-Button, JahresvergleichWidget
 - ✅ Optimierungshinweise (Phase 9) — Engine `berechneOptimierungshinweise()`, Screen, Navigation
 - ✅ PDF-Export (Phase 7)
 - ✅ Dashboard-Navigation: MetricCards + Checkliste-Einträge klickbar (Phase 8)

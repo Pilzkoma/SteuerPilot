@@ -39,11 +39,57 @@ Grundlage für das Jahresübernahme & Jahresvergleich-Feature. Drei von neun Tas
 
 ### Offene Punkte (nächste Session)
 
-- Task 4: Automatisches Anlegen des aktuellen Jahres beim App-Start
-- Task 5: `JahresübernahmeModal` + AppShell-Integration (Trigger wenn neues Jahr leer)
-- Task 6: Manueller "Vom Vorjahr übernehmen"-Button im WizardScreen
-- Task 7: `JahresvergleichWidget` im Dashboard
-- Task 8: `JahresvergleichScreen` mit SVG-Balkendiagrammen + Tabelle
+- Task 8: `JahresvergleichScreen` mit Balkendiagrammen + Tabelle
+- Task 9: Navigation für Jahresvergleich-Screen in NAV_ITEMS
+
+---
+
+## 2026-03-27 — Phase 10 (Teil 2): Jahresübernahme & Vergleich — Tasks 4–7
+
+### Was wurde gebaut
+
+**Task 4 — Auto-Jahresanlage beim App-Start (`AppShell.jsx`):**
+- Beim Laden der Shell wird geprüft ob das aktuelle Kalenderjahr in der DB existiert
+- Falls nicht: `steuerjahr:anlegen` wird automatisch aufgerufen
+- Das neue Jahr wird direkt aktiv gesetzt — der Nutzer landet immer im richtigen Jahr
+- Bugfix: `aktualisierteJahre` wird korrekt an spätere Logik weitergegeben (kein stale state)
+
+**Task 5 — JahresübernahmeModal + AppShell-Integration (`AppShell.jsx`):**
+- Modal erscheint automatisch wenn ein neues (leeres) Jahr aktiviert wird und ein Vorjahr mit Daten existiert
+- Trigger beim Jahr-Wechsel via `handleChangeJahr` und beim App-Start (nach Auto-Jahresanlage)
+- IPC `jahresubernahme:pruefen` liefert das Angebot (quellJahr, was übernommen wird)
+- IPC `jahresubernahme:ausfuehren` führt die Übernahme durch, dann `loadShellData()` für frische Daten
+- "Leer starten" schließt Modal ohne Aktion
+- Bugfix: `loadShellData()` nach erfolgreicher Übernahme aufgerufen
+
+**Task 6 — Manueller Übernahme-Button im WizardScreen (`WizardScreen.jsx` + neues `JahresubernahmeModal/JahresubernahmeModal.jsx`):**
+- `JahresubernahmeModal` als eigenständige Komponente extrahiert (wiederverwendbar)
+- Im WizardScreen-Header erscheint ein "Vom Vorjahr übernehmen"-Button sobald ein Übernahme-Angebot existiert
+- Button animiert ein/aus (AnimatePresence + springGentle)
+- Klick öffnet das Modal, Übernahme ruft `ausfuehren` auf und lädt den Wizard-Draft neu
+
+**Task 7 — JahresvergleichWidget im Dashboard (`DashboardScreen.jsx`):**
+- Widget lädt via `vergleich:laden` alle Jahre, filtert auf Jahre mit Daten
+- Rendert nur wenn ≥ 2 Jahre mit Daten vorhanden — sonst unsichtbar, kein Leerstand
+- Zeigt Einnahmen und Werbungskosten des aktuellsten Jahres mit Delta-Badge (±% vs. Vorjahr)
+- Klick navigiert zu `jahresvergleich` (bereit für Task 9)
+- Qualitätsfixe: `DeltaBadge` und `vergleichDelta` auf Modul-Scope verschoben (nicht in Render-Scope)
+
+### Entscheidungen
+
+- `JahresubernahmeModal` als eigene Datei extrahiert statt inline in AppShell — klare Verantwortlichkeitstrennung, WizardScreen kann es wiederverwenden
+- Auto-Jahresanlage in `loadShellData()` integriert statt separater Logik — ein einziger Datenpfad beim App-Start
+- Widget bleibt komplett unsichtbar wenn Vorjahresdaten fehlen — kein "Noch keine Vergleichsdaten"-Platzhalter, der den Nutzer verwirrt
+
+### Probleme & Lösungen
+
+- **Stale `aktivId` nach Auto-Jahresanlage:** Original-Code nutzte `aktiv?.id` aus altem State, neues Jahr hatte noch keine ID. Lösung: `let aktualisierteJahre` vor dem if-Block deklariert, `aktivIdFinal` daraus berechnet.
+- **Kein Reload nach Übernahme:** `handleUbernehmen` schloss Modal aber lud keine neuen Daten. Lösung: `await loadShellData()` nach `ausfuehren`.
+- **Padding-Abweichung im WizardScreen:** Button-Wrapper hatte `'0.625rem 0'` statt spezifiziertem `'0.625rem 2rem'`. Behoben vor Task-7-Start.
+
+### Offene Punkte (nächste Session)
+
+- Task 8: `JahresvergleichScreen` mit Balkendiagrammen + Tabelle
 - Task 9: Navigation für Jahresvergleich-Screen in NAV_ITEMS
 
 ---
