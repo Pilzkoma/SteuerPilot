@@ -112,8 +112,8 @@ function StatusBadge({ type, message }) {
       transition={springGentle}
       style={{
         display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
-        background: isSuccess ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
-        color: isSuccess ? '#22c55e' : '#ef4444',
+        background: isSuccess ? 'var(--color-tertiary-container)' : 'var(--color-error-container)',
+        color: isSuccess ? 'var(--color-tertiary)' : 'var(--color-error)',
         borderRadius: 'var(--radius-pill)',
         padding: '0.25rem 0.75rem',
         fontSize: '0.75rem', fontWeight: 600,
