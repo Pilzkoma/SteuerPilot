@@ -477,6 +477,28 @@ function EstimateCard({ metrics, activeJahr, delay = 0 }) {
 
 // ── JahresvergleichWidget ─────────────────────────────────────────────────────
 
+function vergleichDelta(neu, alt) {
+  if (!alt || alt === 0) return null
+  return Math.round(((neu - alt) / Math.abs(alt)) * 100)
+}
+
+function DeltaBadge({ wert }) {
+  if (wert === null) return null
+  const pos = wert >= 0
+  return (
+    <span style={{
+      fontSize: '0.625rem', fontWeight: 700,
+      color: pos ? 'var(--color-tertiary)' : 'var(--color-error)',
+      background: pos ? 'rgba(168,199,160,0.12)' : 'rgba(255,138,128,0.1)',
+      padding: '0.125rem 0.375rem',
+      borderRadius: 'var(--radius-pill)',
+      marginLeft: '0.375rem'
+    }}>
+      {pos ? '+' : ''}{wert}%
+    </span>
+  )
+}
+
 function JahresvergleichWidget({ delay = 0, onNavigate }) {
   const [daten, setDaten] = useState(null)
 
@@ -491,29 +513,6 @@ function JahresvergleichWidget({ delay = 0, onNavigate }) {
 
   const aktuell = daten[daten.length - 1]
   const vorjahr = daten[daten.length - 2]
-
-  function delta(neu, alt) {
-    if (!alt || alt === 0) return null
-    const pct = Math.round(((neu - alt) / Math.abs(alt)) * 100)
-    return pct
-  }
-
-  function DeltaBadge({ wert }) {
-    if (wert === null) return null
-    const pos = wert >= 0
-    return (
-      <span style={{
-        fontSize: '0.625rem', fontWeight: 700,
-        color: pos ? 'var(--color-tertiary)' : 'var(--color-error)',
-        background: pos ? 'rgba(168,199,160,0.12)' : 'rgba(255,138,128,0.1)',
-        padding: '0.125rem 0.375rem',
-        borderRadius: 'var(--radius-pill)',
-        marginLeft: '0.375rem'
-      }}>
-        {pos ? '+' : ''}{wert}%
-      </span>
-    )
-  }
 
   const reihen = [
     { label: 'Einnahmen', aktuellWert: aktuell.einnahmen, vorjahrWert: vorjahr.einnahmen },
@@ -561,7 +560,7 @@ function JahresvergleichWidget({ delay = 0, onNavigate }) {
               <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-on-surface)' }}>
                 {formatEuro(r.aktuellWert)}
               </span>
-              <DeltaBadge wert={delta(r.aktuellWert, r.vorjahrWert)} />
+              <DeltaBadge wert={vergleichDelta(r.aktuellWert, r.vorjahrWert)} />
             </div>
           </div>
         ))}
