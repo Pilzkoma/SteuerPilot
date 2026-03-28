@@ -671,3 +671,15 @@ Vollständiger 6-Schritt-Wizard für die Steuerdateneingabe:
 
 - **Phase 5 Teil 2:** OCR-Erkennung (Betrag, Datum, Händler automatisch auslesen) + Jetson-Analyse
 - **Phase 6:** PDF-Export nach ELSTER-Feldern
+
+## Gemini Update [28. März 2026]
+
+### iOS App Initialisierung
+- Handover-File erstellt: `IOS_HANDOVER.md`
+- Theme-System portiert: `ios-app/SteuerPilot/Theme/Theme.swift`
+- Grundstruktur angelegt: Views, Engine, Models, Database, Theme
+- Core Views: `LoginView.swift` (SwiftUI) gebaut
+- Engine & Database Skelette vorbereitet (`SteuerEngine.swift`, `DatabaseManager.swift`)
+
+### Status
+Desktop (Electron) ist feature-complete. iOS-App Foundation ist gelegt.
